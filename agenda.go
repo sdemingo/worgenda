@@ -1,0 +1,87 @@
+package main
+
+import (
+	//"fmt"
+	"time"
+)
+
+const (
+	NEXT_DAYS           = 20
+	DATEHOURFORMATPRINT = "02/01/2006 Mon 15:04"
+	DATEFORMATPRINT     = "02/01/2006 Mon"
+)
+
+type Note struct {
+	Title  string
+	Body   string
+	Stamps []time.Time
+}
+
+func (n *Note) String() string {
+	s := n.Title + "\n"
+	s = s + n.Body + "\n"
+	for _, st := range n.Stamps {
+		s = s + "\t -" + st.Format(DATEHOURFORMATPRINT) + "\n"
+	}
+	s = s + "\n\n"
+	return s
+}
+
+type Day struct {
+	Tm       time.Time
+	SchedDay []Note
+}
+
+type Agenda struct {
+	AllNotes []Note
+	Sched    []Day
+}
+
+func NewAgenda() Agenda {
+	a := new(Agenda)
+	return *a
+}
+
+func (a *Agenda) InsertNotes(notes []Note) {
+	for i := range notes {
+		a.AllNotes = append(a.AllNotes, notes[i])
+	}
+}
+
+func (a *Agenda) FilterNotes(date time.Time) []Note {
+	filter := make([]Note, 0)
+	for _, note := range a.AllNotes {
+		for _, stamp := range note.Stamps {
+			day := date
+			past := date.AddDate(0, 0, -1)
+
+			if past.Before(stamp) && day.After(stamp) {
+				filter = append(filter, note)
+			}
+		}
+	}
+	return filter
+}
+
+func (a *Agenda) Build() {
+	now := time.Now()
+	c := 0
+	a.Sched = make([]Day, NEXT_DAYS)
+	for c < NEXT_DAYS {
+		a.Sched[c].Tm = now.AddDate(0, 0, c)
+		a.Sched[c].SchedDay = a.FilterNotes(a.Sched[c].Tm)
+		c++
+	}
+}
+
+func (a *Agenda) String() string {
+	s := ""
+	for _, day := range a.Sched {
+		s = s + " [" + day.Tm.Format(DATEFORMATPRINT) + "]\n"
+		for _, note := range day.SchedDay {
+			s = s + "\t -" + note.Title + "\n"
+		}
+		s = s + "\n"
+	}
+	return s
+}

@@ -7,22 +7,6 @@ import (
 	"time"
 )
 
-type Note struct {
-	Title  string
-	Body   string
-	Stamps []time.Time
-}
-
-func (n *Note) String() string {
-	s := n.Title + "\n"
-	s = s + n.Body + "\n"
-	for _, st := range n.Stamps {
-		s = s + "\t -" + st.Format("02/01/2006 15:04") + "\n"
-	}
-	s = s + "\n\n"
-	return s
-}
-
 var noteTitleReg = regexp.MustCompile("(?m)^(\\*{1,3} .+\\n)")
 var separator = "@@@@\n"
 var separatorReg = regexp.MustCompile("(?m)^@@@@\\n")
