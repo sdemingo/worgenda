@@ -1,14 +1,31 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
+	"log"
 	"net/http"
 )
 
 func init() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", rootHandler)
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Worgenda!!!")
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+
+	notes, err := ParseFile("./test.org")
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	a := NewAgenda()
+	a.InsertNotes(notes)
+	a.Build()
+
+	tmpl := template.Must(template.ParseFiles("tmpl/agenda.html"))
+	if err := tmpl.Execute(w, a); err != nil {
+		log.Println(err)
+		return
+	}
 }
