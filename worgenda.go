@@ -12,10 +12,6 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// for _, n := range notes {
-	// 	fmt.Println(n.String())
-	// }
-
 	a := NewAgenda()
 	a.InsertNotes(notes)
 	a.Build()

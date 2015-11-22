@@ -12,8 +12,7 @@ func init() {
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 
-	notes, err := ParseFile("./test.org")
-
+	notes, err := ParseFile("test.org")
 	if err != nil {
 		log.Println(err)
 		return

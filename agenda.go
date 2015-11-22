@@ -29,6 +29,7 @@ func (n *Note) String() string {
 
 type Day struct {
 	Tm       time.Time
+	TmStr    string
 	SchedDay []Note
 }
 
@@ -65,10 +66,12 @@ func (a *Agenda) FilterNotes(date time.Time) []Note {
 
 func (a *Agenda) Build() {
 	now := time.Now()
+	basetime := time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 0, time.UTC)
 	c := 0
 	a.Sched = make([]Day, NEXT_DAYS)
 	for c < NEXT_DAYS {
-		a.Sched[c].Tm = now.AddDate(0, 0, c)
+		a.Sched[c].Tm = basetime.AddDate(0, 0, c)
+		a.Sched[c].TmStr = a.Sched[c].Tm.Format(DATEFORMATPRINT)
 		a.Sched[c].SchedDay = a.FilterNotes(a.Sched[c].Tm)
 		c++
 	}
@@ -77,7 +80,7 @@ func (a *Agenda) Build() {
 func (a *Agenda) String() string {
 	s := ""
 	for _, day := range a.Sched {
-		s = s + " [" + day.Tm.Format(DATEFORMATPRINT) + "]\n"
+		s = s + " [" + day.Tm.Format(DATEHOURFORMATPRINT) + "]\n"
 		for _, note := range day.SchedDay {
 			s = s + "\t -" + note.Title + "\n"
 		}

@@ -11,8 +11,13 @@
     <h1>Worgenda</h1>
     
     <ul>
-    {{range .Sched  }}
-      <li>{{.Tm}}
+    {{range .Sched}}
+      <li>{{.TmStr}}
+	<ul>
+	  {{range .SchedDay  }}
+	    <li>{{.Title}}
+          {{end}}
+	</ul>
     {{end}}
     </ul>
   </body>
