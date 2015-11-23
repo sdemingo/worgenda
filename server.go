@@ -1,6 +1,7 @@
 package main
 
 import (
+	"appengine"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,11 +13,14 @@ func init() {
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 
-	notes, err := ParseFile("test.org")
+	config, err := GetDropboxConfig()
 	if err != nil {
 		log.Println(err)
 		return
 	}
+	fileContent, err := ReadFile(config, config.Files[0])
+
+	notes := Parse(fileContent)
 
 	a := NewAgenda()
 	a.InsertNotes(notes)

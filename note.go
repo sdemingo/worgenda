@@ -1,27 +1,57 @@
 package main
 
 import (
-	"io/ioutil"
+	//"io/ioutil"
 	"regexp"
 	"strings"
 	"time"
 )
 
+type Note struct {
+	Title  string
+	Body   string
+	Stamps []time.Time
+}
+
+func (n *Note) String() string {
+	s := n.Title + "\n"
+	s = s + n.Body + "\n"
+	for _, st := range n.Stamps {
+		s = s + "\t -" + st.Format(DATEHOURFORMATPRINT) + "\n"
+	}
+	s = s + "\n\n"
+	return s
+}
+
+// Recover cached notes (from datastore by now)
+func LoadCachedNotes() ([]Note, error) {
+	notes := make([]Note, 0)
+
+	return notes, nil
+}
+
+/*
+
+   Org mode
+
+*/
+
 var noteTitleReg = regexp.MustCompile("(?m)^(\\*{1,3} .+\\n)")
 var separator = "@@@@\n"
 var separatorReg = regexp.MustCompile("(?m)^@@@@\\n")
-
-// Templates:    <2015-12-04 vie 12:00>  or   <2015-12-10 jue>
 var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?\\>")
 
-func ParseFile(file string) ([]Note, error) {
+// Parse string content in org mode and recover notes from it
+func Parse(content string) []Note {
 	notes := make([]Note, 0)
-	buf, err := ioutil.ReadFile(file)
+
+	/*buf, err := ioutil.ReadFile(file)
 	if err != nil {
 		return notes, err
 	}
 
-	content := string(buf)
+	content := string(buf)*/
+
 	content = noteTitleReg.ReplaceAllString(content, separator+"$1")
 	rawNotes := separatorReg.Split(content, -1)
 
@@ -34,7 +64,7 @@ func ParseFile(file string) ([]Note, error) {
 		notes = append(notes, *note)
 	}
 
-	return notes, err
+	return notes
 }
 
 func parseTitle(orgnote string) string {

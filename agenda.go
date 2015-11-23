@@ -11,22 +11,6 @@ const (
 	DATEFORMATPRINT     = "02/01/2006 Mon"
 )
 
-type Note struct {
-	Title  string
-	Body   string
-	Stamps []time.Time
-}
-
-func (n *Note) String() string {
-	s := n.Title + "\n"
-	s = s + n.Body + "\n"
-	for _, st := range n.Stamps {
-		s = s + "\t -" + st.Format(DATEHOURFORMATPRINT) + "\n"
-	}
-	s = s + "\n\n"
-	return s
-}
-
 type Day struct {
 	Tm       time.Time
 	TmStr    string
