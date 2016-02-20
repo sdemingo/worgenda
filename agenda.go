@@ -22,9 +22,9 @@ type Agenda struct {
 	Sched    []Day
 }
 
-func NewAgenda() Agenda {
+func NewAgenda() *Agenda {
 	a := new(Agenda)
-	return *a
+	return a
 }
 
 func (a *Agenda) InsertNotes(notes []Note) {

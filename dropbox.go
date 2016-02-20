@@ -41,7 +41,7 @@ func ReadFile(config *DropboxConfig, file string) (string, error) {
 	db.SetAppInfo(config.AppKey, config.AppSecret)
 	db.SetAccessToken(config.Token)
 
-	rd, _, err := db.Download(config.Files[0], "", 0)
+	rd, _, err := db.Download(file, "", 0)
 	if err != nil {
 		return s, err
 	}
