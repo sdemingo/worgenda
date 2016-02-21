@@ -1,63 +1,80 @@
 package main
 
 import (
-	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
 )
 
-var agenda *Agenda
+const (
+	TLSPORT    = ":8443"
+	PORT       = ":8080"
+	PRIV_KEY   = "./keys/private_key"
+	PUBLIC_KEY = "./keys/public_key"
+	DOMAIN     = "localhost"
+)
 
 func main() {
 
-	drpConfig, err := GetDropboxConfig()
-	if err != nil {
-		log.Printf("%v", err)
-		return
-	}
-
-	agenda = NewAgenda()
-
-	go loadEvents(drpConfig, agenda)
-
 	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/events", eventHandler)
+	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/welcome", welcomeHandler)
+
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	http.ListenAndServe(":8080", nil)
-}
 
-func loadEvents(config *DropboxConfig, a *Agenda) {
+	// Redirect all requests to TLS socket
+	go func() {
+		err := http.ListenAndServe(PORT, http.RedirectHandler("https://"+DOMAIN+TLSPORT, http.StatusFound))
+		if err != nil {
+			panic("Error: " + err.Error())
+		}
+	}()
 
-	fileContent, err := ReadFile(config, "prueba.org")
+	// Listen on secure port
+	err := http.ListenAndServeTLS(TLSPORT, PUBLIC_KEY, PRIV_KEY, nil)
 	if err != nil {
-		log.Panic("%v", err)
-		return
+		panic("Error: " + err.Error())
 	}
-	notes := Parse(fileContent)
-	a.InsertNotes(notes)
-	a.Build()
+
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 
-	tmpl := template.Must(template.ParseFiles("tmpl/agenda.html"))
+	tmpl := template.Must(template.ParseFiles("login.html"))
 	if err := tmpl.Execute(w, nil); err != nil {
 		log.Printf("%v", err)
 		return
 	}
 }
 
-func eventHandler(w http.ResponseWriter, r *http.Request) {
+func loginHandler(w http.ResponseWriter, r *http.Request) {
 
-	json, err := json.Marshal(agenda.AllNotes)
+	r.ParseForm()
 
-	if err != nil {
+	username := r.Form.Get("username")
+	password := r.Form.Get("password")
+
+	user, err := GetUser(username)
+	if err != nil || user.Password != password {
+		exit(w, r)
+	}
+
+	welcome(w, r)
+}
+
+func welcomeHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("model/agenda/tmpl/agenda.html"))
+	if err := tmpl.Execute(w, nil); err != nil {
 		log.Printf("%v", err)
 		return
 	}
+}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(json)
+func exit(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+}
+
+func welcome(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/welcome", http.StatusMovedPermanently)
 }
