@@ -18,6 +18,7 @@ func main() {
 
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/welcome", welcomeHandler)
 
 	fs := http.FileServer(http.Dir("static"))
@@ -40,6 +41,11 @@ func main() {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+	s, _ := GetSession(r)
+	if s != nil {
+		welcome(w, r)
+		return
+	}
 
 	tmpl := template.Must(template.ParseFiles("login.html"))
 	if err := tmpl.Execute(w, nil); err != nil {
@@ -49,6 +55,11 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
+	s, _ := GetSession(r)
+	if s != nil {
+		welcome(w, r)
+		return
+	}
 
 	r.ParseForm()
 
@@ -60,10 +71,32 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		exit(w, r)
 	}
 
+	session := NewSession(user)
+	sessionCookie := &http.Cookie{Name: "sessionKey", Value: session.Key, HttpOnly: false}
+	http.SetCookie(w, sessionCookie)
+
 	welcome(w, r)
 }
 
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+
+	session, err := GetSession(r)
+	if err != nil {
+		exit(w, r)
+		return
+	}
+
+	DeleteSession(r)
+	exit(w, r)
+}
+
 func welcomeHandler(w http.ResponseWriter, r *http.Request) {
+	session, err := GetSession(r)
+	if err != nil {
+		exit(w, r)
+		return
+	}
+
 	tmpl := template.Must(template.ParseFiles("model/agenda/tmpl/agenda.html"))
 	if err := tmpl.Execute(w, nil); err != nil {
 		log.Printf("%v", err)
