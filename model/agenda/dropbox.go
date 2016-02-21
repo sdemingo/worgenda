@@ -1,11 +1,12 @@
-package main
+package agenda
 
 import (
 	"bytes"
 	"encoding/json"
 	//"fmt"
-	"github.com/stacktic/dropbox"
 	"os"
+
+	"github.com/stacktic/dropbox"
 )
 
 type DropboxConfig struct {
