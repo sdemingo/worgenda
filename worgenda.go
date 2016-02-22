@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"worgenda/app"
+	"worgenda/model/notes"
 )
 
 const (
@@ -19,7 +20,7 @@ func main() {
 
 	app.Run()
 
-	http.HandleFunc("/welcome", app.WelcomeHandler)
+	http.HandleFunc("/welcome", notes.Main)
 
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

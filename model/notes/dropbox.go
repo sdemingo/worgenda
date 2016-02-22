@@ -1,4 +1,4 @@
-package agenda
+package notes
 
 import (
 	"bytes"

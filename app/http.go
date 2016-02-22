@@ -12,6 +12,10 @@ func Run() {
 	http.HandleFunc("/logout", logoutHandler)
 }
 
+func Exit(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/", http.StatusFound)
+}
+
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	s, _ := GetSession(r)
 	if s != nil {
@@ -40,7 +44,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, err := GetUser(username)
 	if err != nil || user.Password != password {
-		exit(w, r)
+		Exit(w, r)
 	}
 
 	log.Printf("User %s do login", user.Username)
@@ -57,13 +61,13 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("User %s do login", s.User.Username)
 	}
 	DeleteSession(r)
-	exit(w, r)
+	Exit(w, r)
 }
 
 func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := GetSession(r)
 	if err != nil {
-		exit(w, r)
+		Exit(w, r)
 		return
 	}
 
@@ -72,10 +76,6 @@ func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%v", err)
 		return
 	}
-}
-
-func exit(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func welcome(w http.ResponseWriter, r *http.Request) {
