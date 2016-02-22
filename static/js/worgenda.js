@@ -15,7 +15,7 @@ $(document).ready(function(){
 	firstDay: 1
     })
 
-    getEvents()
+    //getEvents()
 })
 
 

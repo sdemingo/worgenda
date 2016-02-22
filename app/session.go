@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"crypto/rand"
@@ -76,6 +76,5 @@ func DeleteSession(r *http.Request) error {
 		return err
 	}
 	delete(sessionTable, s.Key)
-	log.Printf("Session for user %s closed", s.User.Username)
 	return nil
 }

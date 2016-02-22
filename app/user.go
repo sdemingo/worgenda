@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"encoding/json"
@@ -13,7 +13,7 @@ func init() {
 	var err error
 	userTable = make([]*User, 0)
 
-	usersDb, err := os.Open("users.json")
+	usersDb, err := os.Open("./var/users.json")
 	if err != nil {
 		log.Panic(err)
 	}
