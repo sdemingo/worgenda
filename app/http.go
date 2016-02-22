@@ -45,6 +45,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := GetUser(username)
 	if err != nil || user.Password != password {
 		Exit(w, r)
+		return
 	}
 
 	log.Printf("User %s do login", user.Username)
