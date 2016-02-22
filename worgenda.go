@@ -15,6 +15,7 @@ const (
 )
 
 func main() {
+	log.Printf("Run worgenda")
 
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/login", loginHandler)
@@ -37,7 +38,6 @@ func main() {
 	if err != nil {
 		panic("Error: " + err.Error())
 	}
-
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,19 +79,12 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
-
-	session, err := GetSession(r)
-	if err != nil {
-		exit(w, r)
-		return
-	}
-
 	DeleteSession(r)
 	exit(w, r)
 }
 
 func welcomeHandler(w http.ResponseWriter, r *http.Request) {
-	session, err := GetSession(r)
+	_, err := GetSession(r)
 	if err != nil {
 		exit(w, r)
 		return
