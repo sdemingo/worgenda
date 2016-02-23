@@ -4,16 +4,43 @@
   <head>
     <title>Worgenda</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href=""/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/overcast/jquery-ui.css">
+    <link rel="stylesheet" href="/static/css/login.css">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
   </head>
   <body>
+    <div class="container">
+
+      <form class="form-signin" method="POST" action="/login">
+        <!--  <h2 class="form-signin-heading">Worgenda</h2>-->
+        <label for="inputEmail" class="sr-only">Username</label>
+        <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
+        <label for="inputPassword"  class="sr-only">Password</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+        <!-- <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div> -->
+        <button class="btn btn-lg btn-primary btn-block" name="login" type="submit">Entrar</button>
+      </form>
+
+    </div> <!-- /container -->
+
+
+
+    <!-- 
     <h1>Login to Worgenda</h1>
 
     <form method="POST" action="/login">
       <label>Login:</label><input type="text" name="username" />
       <label>Password:</label><input type="text" name="password" />
       <input type="submit" name="login" value="Entrar"/>
-    </form>
+    </form> -->
   </body>
 </html>
