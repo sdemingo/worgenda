@@ -21,6 +21,7 @@ func main() {
 	app.Run()
 
 	http.HandleFunc("/welcome", notes.Main)
+	http.HandleFunc("/notes/dates", notes.GetMarkDates)
 
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

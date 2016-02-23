@@ -2,6 +2,8 @@ package notes
 
 import (
 	//"io/ioutil"
+
+	"log"
 	"regexp"
 	"strings"
 	"time"
@@ -9,10 +11,26 @@ import (
 
 const (
 	DATEHOURFORMATPRINT = "02/01/2006 Mon 15:04"
-	DATEFORMATPRINT     = "02/01/2006 Mon"
+	//	DATEFORMATPRINT     = "02/01/2006 Mon"
+	DATEFORMATPRINT = "02 Jan 2006"
 )
 
 var AllNotes []Note
+
+func init() {
+	// Load notes from source (dropbox)
+
+	dc, err := GetDropboxConfig()
+	if err != nil {
+		log.Panic(err)
+	}
+	content, err := ReadFile(dc, "prueba.org")
+	if err != nil {
+		log.Panic(err)
+	}
+	AllNotes = Parse(content)
+	log.Printf("All notes are loaded")
+}
 
 type Note struct {
 	Title  string
@@ -51,13 +69,6 @@ var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?\
 // Parse string content in org mode and recover notes from it
 func Parse(content string) []Note {
 	notes := make([]Note, 0)
-
-	/*buf, err := ioutil.ReadFile(file)
-	if err != nil {
-		return notes, err
-	}
-
-	content := string(buf)*/
 
 	content = noteTitleReg.ReplaceAllString(content, separator+"$1")
 	rawNotes := separatorReg.Split(content, -1)

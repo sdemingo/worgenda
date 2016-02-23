@@ -1,6 +1,8 @@
 
 
-var W={}
+var W={
+    datesMarked:[]
+}
 
 $(document).ready(function(){
 
@@ -12,24 +14,44 @@ $(document).ready(function(){
 	dayNamesShort: [ "Dom", "Lun", "Mar", "Mier", "Jue", "Vie", "Sab" ],
 	monthNames: [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
 		      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ],
-	firstDay: 1
+	firstDay: 1,
+	beforeShowDay: markDates
     })
 
-    //getEvents()
+    getMarkDates()
 })
 
 
-function getEvents(){
+function getMarkDates(){
 
     $.ajax({
-    	url:"/events",
+    	url:"/notes/dates",
     	type: 'get',
 	dataType: 'json',
-    	success: function (events){
-	    console.log(events)
+    	success: function (dates){
+	    for (var i=0;i<dates.length;i++){
+		W.datesMarked.push(new Date(dates[i]))
+	    }
+
+	    console.log(W.datesMarked)
+	    $("#datepicker").datepicker( "refresh" )
 	},
     	error: function(error){
 	    console.log(error)
 	}
     })
 }
+
+
+function markDates(date) {
+    var dates=W.datesMarked
+    console.log("markDates? "+date)
+    for (var i = 0; i < dates.length; i++) {
+        //if (new Date(dates[i]).toString() == date.toString()) {              
+	if (dates[i].getTime() == date.getTime()){
+	    console.log("huaaa")
+            return [true, "marked-date", ""];
+        }
+    }
+    return [true, ""];
+} 

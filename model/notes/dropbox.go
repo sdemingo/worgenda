@@ -19,7 +19,7 @@ type DropboxConfig struct {
 func GetDropboxConfig() (*DropboxConfig, error) {
 	config := new(DropboxConfig)
 
-	configFile, err := os.Open("config.json")
+	configFile, err := os.Open("var/config.json")
 	if err != nil {
 		return nil, err
 	}
