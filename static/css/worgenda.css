@@ -1,16 +1,16 @@
 
 body {
-  padding-top: 50px;
+    padding-top: 50px;
 }
 
 
 #datepicker-container{
-  padding: 40px 15px;
-  text-align:center;
+    padding: 40px 15px;
+    text-align:center;
 }
 #datepicker-center{
-  display:inline-block;
-  margin:0 auto;
+    display:inline-block;
+    margin:0 auto;
 }
 
 #datepicker{
@@ -20,4 +20,10 @@ body {
     border:1px solid silver;
 
     font-size: 150.5%; 
+}
+
+
+.dp-marked-date .ui-state-default {
+    background: #484;
+    color: #FFF;
 }

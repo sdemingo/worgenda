@@ -45,12 +45,9 @@ function getMarkDates(){
 
 function markDates(date) {
     var dates=W.datesMarked
-    console.log("markDates? "+date)
     for (var i = 0; i < dates.length; i++) {
-        //if (new Date(dates[i]).toString() == date.toString()) {              
 	if (dates[i].getTime() == date.getTime()){
-	    console.log("huaaa")
-            return [true, "marked-date", ""];
+	    return [true, "dp-marked-date"];
         }
     }
     return [true, ""];
