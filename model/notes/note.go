@@ -11,8 +11,7 @@ import (
 
 const (
 	DATEHOURFORMATPRINT = "02/01/2006 Mon 15:04"
-	//	DATEFORMATPRINT     = "02/01/2006 Mon"
-	DATEFORMATPRINT = "02 Jan 2006"
+	DATEFORMATPRINT     = "02 Jan 2006"
 )
 
 var AllNotes []Note
@@ -48,12 +47,14 @@ func (n *Note) String() string {
 	return s
 }
 
+/*
 // Recover cached notes (from datastore by now)
 func LoadCachedNotes() ([]Note, error) {
 	notes := make([]Note, 0)
 
 	return notes, nil
 }
+*/
 
 /*
 

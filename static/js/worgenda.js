@@ -15,7 +15,9 @@ $(document).ready(function(){
 	monthNames: [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
 		      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ],
 	firstDay: 1,
-	beforeShowDay: markDates
+	dateFormat:"dd M yy",
+	beforeShowDay: markDates,
+	onSelect: getEventsForADate
     })
 
     getMarkDates()
@@ -40,6 +42,21 @@ function getMarkDates(){
 	    console.log(error)
 	}
     })
+}
+
+function getEventsForADate(sdate){
+  
+    $.ajax({
+    	url:"/notes/events",
+    	type: 'post',
+	data: sdate,
+    	success: function (events){
+	    alert(events)
+	},
+    	error: function(error){
+	    console.log(error)
+	}
+    })    
 }
 
 

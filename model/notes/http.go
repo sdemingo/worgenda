@@ -1,6 +1,7 @@
 package notes
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -23,6 +24,38 @@ func Main(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%v", err)
 		return
 	}
+}
+
+func GetEvents(w http.ResponseWriter, r *http.Request) {
+	_, err := app.GetSession(r)
+	if err != nil {
+		app.Exit(w, r)
+		return
+	}
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(r.Body)
+	s := buf.String() // Does a complete copy of the bytes in the buffer.
+	date, _ := time.Parse(DATEFORMATPRINT, s)
+
+	notes := make([]Note, 0)
+	for _, note := range AllNotes {
+		for _, stamp := range note.Stamps {
+			if stamp == date {
+				notes = append(notes, note)
+			}
+		}
+	}
+
+	// Write json
+	w.Header().Set("Content-Type", "application/json")
+	jbody, err := json.Marshal(notes)
+	if err != nil {
+		log.Printf("notes: getevents: %v", err)
+		return
+	}
+	fmt.Fprintf(w, "%s", string(jbody[:len(jbody)]))
+
 }
 
 func GetMarkDates(w http.ResponseWriter, r *http.Request) {
