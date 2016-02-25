@@ -47,15 +47,17 @@ func GetEvents(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Write json
-	w.Header().Set("Content-Type", "application/json")
-	jbody, err := json.Marshal(notes)
-	if err != nil {
-		log.Printf("notes: getevents: %v", err)
+	var contents = map[string]interface{}{
+		"Date":   date.Format(DATEFORMATFORHTML),
+		"Events": notes,
+	}
+
+	// Write template
+	tmpl := template.Must(template.ParseFiles("model/notes/tmpl/day-events.html"))
+	if err := tmpl.Execute(w, contents); err != nil {
+		log.Printf("%v", err)
 		return
 	}
-	fmt.Fprintf(w, "%s", string(jbody[:len(jbody)]))
-
 }
 
 func GetMarkDates(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,20 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{.Date}}</h3>
+  </div>
+  <div class="panel-body">
+   {{ if not .Events }}
+    <p>No hay eventos</p>
+    {{else}}
+    <div class="list-group">
+   {{range .Events}}
+      <a href="#" class="list-group-item">
+	<h4 class="list-group-item-heading">{{.Title}}</h4>
+	<p class="list-group-item-text">{{.Body}}</p>
+      </a>
+   {{end}}
+    </div>
+    {{end}}
+  </div>
+
+</div>

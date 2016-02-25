@@ -12,6 +12,7 @@ import (
 const (
 	DATEHOURFORMATPRINT = "02/01/2006 Mon 15:04"
 	DATEFORMATPRINT     = "02 Jan 2006"
+	DATEFORMATFORHTML   = "Monday, 02 January 2006"
 )
 
 var AllNotes []Note
