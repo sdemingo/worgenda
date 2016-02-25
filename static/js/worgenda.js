@@ -1,7 +1,8 @@
 
 
 var W={
-    datesMarked:[]
+    datesMarked:[],
+    datepickerFormatLayout : "dd M yy"
 }
 
 $(document).ready(function(){
@@ -15,12 +16,14 @@ $(document).ready(function(){
 	monthNames: [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
 		      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ],
 	firstDay: 1,
-	dateFormat:"dd M yy",
+	dateFormat:W.datepickerFormatLayout,
 	beforeShowDay: markDates,
 	onSelect: getEventsForADate
     })
 
     getMarkDates()
+    var today=$.datepicker.formatDate(W.datepickerFormatLayout, new Date()) 
+    getEventsForADate(today)
 })
 
 
@@ -50,8 +53,8 @@ function getEventsForADate(sdate){
     	url:"/notes/events",
     	type: 'post',
 	data: sdate,
-    	success: function (events){
-	    alert(events)
+    	success: function (html){
+	    loadHTML(html)
 	},
     	error: function(error){
 	    console.log(error)
@@ -69,3 +72,8 @@ function markDates(date) {
     }
     return [true, ""];
 } 
+
+
+function loadHTML(html){
+    $("#content").html(html)
+}

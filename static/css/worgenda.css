@@ -1,24 +1,10 @@
 
 body {
-    padding-top: 50px;
-}
-
-
-#datepicker-container{
-    padding: 40px 15px;
-    text-align:center;
-}
-#datepicker-center{
-    display:inline-block;
-    margin:0 auto;
+    padding-top: 80px;
 }
 
 #datepicker{
-    margin:0 auto;
     height:100%;
-    padding:5px;
-    border:1px solid silver;
-
     font-size: 150.5%; 
 }
 
