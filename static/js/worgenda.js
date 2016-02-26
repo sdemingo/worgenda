@@ -76,4 +76,9 @@ function markDates(date) {
 
 function loadHTML(html){
     $("#content").html(html)
+
+    //default events
+    $("#content a").on("click",function(e){
+	e.preventDefault()
+    })
 }
