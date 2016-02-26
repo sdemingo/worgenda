@@ -2,6 +2,7 @@ package notes
 
 import (
 	"log"
+	"strings"
 	"time"
 )
 
@@ -10,6 +11,8 @@ const (
 	HOURFORMATPRINT     = "15:04"
 	DATEFORMATPRINT     = "02 Jan 2006"
 	DATEFORMATFORHTML   = "Monday, 02 January 2006"
+
+	MAXWORDSRESUMEBODY = 20
 )
 
 var AllNotes []Note
@@ -29,9 +32,32 @@ func init() {
 }
 
 type Note struct {
+	Id     int
 	Title  string
 	Body   string
 	Stamps []time.Time
+}
+
+func (n *Note) GetResumeBody() string {
+
+	words := strings.Fields(n.Body)
+	if len(words) < MAXWORDSRESUMEBODY {
+		return strings.Join(words, " ")
+	} else {
+		return strings.Join(words[:MAXWORDSRESUMEBODY], " ") + " ..."
+	}
+}
+
+// Return if a note have a stamp which happens in this day
+func (n *Note) InDay(date time.Time) bool {
+	for _, stamp := range n.Stamps {
+		md := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 1, 0, time.UTC)
+		diffMd := int(stamp.Sub(md).Hours())
+		if stamp == date || (diffMd < 24 && diffMd >= 0) {
+			return true
+		}
+	}
+	return false
 }
 
 // Return the string part with the hour for the timestamp that happens
@@ -44,24 +70,10 @@ func (n *Note) GetStampHour(date time.Time) string {
 	return stamp.Format(HOURFORMATPRINT)
 }
 
-// Return if a note have a stamp which happens in this day
-func (n *Note) InDay(date time.Time) bool {
-	for _, stamp := range n.Stamps {
-		md := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 1, 0, time.UTC)
-		diffMd := int(stamp.Sub(md).Hours())
-		if stamp == date || (diffMd < 24 && diffMd > 0) {
-			return true
-		}
-	}
-	return false
-}
-
 // Get the stamp of the note for this day
 func (n *Note) GetStampForDay(date time.Time) time.Time {
 	for _, stamp := range n.Stamps {
-		md := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 1, 0, time.UTC)
-		diffMd := int(stamp.Sub(md).Hours())
-		if stamp == date || (diffMd < 24 && diffMd > 0) {
+		if datesInSameDay(stamp, date) {
 			return stamp
 		}
 	}
@@ -97,4 +109,21 @@ func (dn *DayNotes) Less(i, j int) bool {
 
 func (dn *DayNotes) Swap(i, j int) {
 	dn.Notes[i], dn.Notes[j] = dn.Notes[j], dn.Notes[i]
+}
+
+func datesInSameDay(date1, date2 time.Time) bool {
+	var md time.Time
+	var diffMd int
+	if date1.Before(date2) {
+		md = time.Date(date1.Year(), date1.Month(), date1.Day(), 0, 0, 1, 0, time.UTC)
+		diffMd = int(date2.Sub(md).Hours())
+	} else {
+		md = time.Date(date2.Year(), date2.Month(), date2.Day(), 0, 0, 1, 0, time.UTC)
+		diffMd = int(date1.Sub(md).Hours())
+	}
+	if date1 == date2 || (diffMd < 24 && diffMd >= 0) {
+		return true
+	}
+
+	return false
 }

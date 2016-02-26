@@ -21,8 +21,9 @@ func Parse(content string) []Note {
 	content = noteTitleReg.ReplaceAllString(content, separator+"$1")
 	rawNotes := separatorReg.Split(content, -1)
 
-	for _, rnote := range rawNotes {
+	for i, rnote := range rawNotes {
 		note := new(Note)
+		note.Id = i
 		note.Title = parseTitle(rnote)
 		note.Body = parseBody(rnote)
 		note.Stamps = parseStamps(rnote)
@@ -58,7 +59,13 @@ func parseStamps(orgnote string) []time.Time {
 		if strings.Contains(rt, ":") {
 			t, err = time.Parse("<2006-01-02 15:04>", rt)
 		} else {
+			// If the stamp has not hour is dangerous for
+			// datesInSameDay() function that we save it
+			// as 00:00. For that reason we add a second after
+			// the midnight
+
 			t, err = time.Parse("<2006-01-02>", rt)
+			t = t.Add(time.Second)
 		}
 		if err == nil {
 			times = append(times, t)
