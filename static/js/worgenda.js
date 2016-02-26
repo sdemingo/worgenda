@@ -2,7 +2,8 @@
 
 var W={
     datesMarked:[],
-    datepickerFormatLayout : "dd M yy"
+    datepickerFormatLayout : "dd M yy",
+    currentDate:new Date()
 }
 
 $(document).ready(function(){
@@ -48,13 +49,14 @@ function getMarkDates(){
 }
 
 function getEventsForADate(sdate){
-  
+    
     $.ajax({
     	url:"/notes/events",
     	type: 'post',
 	data: sdate,
     	success: function (html){
 	    loadHTML(html)
+	    W.currentDate=sdate
 	},
     	error: function(error){
 	    console.log(error)
@@ -78,7 +80,27 @@ function loadHTML(html){
     $("#content").html(html)
 
     //default events
-    $("#content a").on("click",function(e){
+    $("#event .close-event").on("click",function(e){
 	e.preventDefault()
+	getEventsForADate(W.currentDate)	
+    })
+
+    $("#day-events a").on("click",function(e){
+	e.preventDefault()
+	
+	var href=$(this).attr("href")
+	console.log(href)
+
+	$.ajax({
+    	    url:href,
+    	    type: 'post',
+	    data: "date="+W.currentDate,
+    	    success: function (html){
+		loadHTML(html)
+	    },
+    	    error: function(error){
+		console.log(error)
+	    }
+	})  	
     })
 }
