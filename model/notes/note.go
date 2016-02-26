@@ -1,16 +1,13 @@
 package notes
 
 import (
-	//"io/ioutil"
-
 	"log"
-	"regexp"
-	"strings"
 	"time"
 )
 
 const (
 	DATEHOURFORMATPRINT = "02/01/2006 Mon 15:04"
+	HOURFORMATPRINT     = "15:04"
 	DATEFORMATPRINT     = "02 Jan 2006"
 	DATEFORMATFORHTML   = "Monday, 02 January 2006"
 )
@@ -19,7 +16,6 @@ var AllNotes []Note
 
 func init() {
 	// Load notes from source (dropbox)
-
 	dc, err := GetDropboxConfig()
 	if err != nil {
 		log.Panic(err)
@@ -38,126 +34,67 @@ type Note struct {
 	Stamps []time.Time
 }
 
-func (n *Note) String() string {
-	s := n.Title + "\n"
-	s = s + n.Body + "\n"
-	for _, st := range n.Stamps {
-		s = s + "\t -" + st.Format(DATEHOURFORMATPRINT) + "\n"
+// Return the string part with the hour for the timestamp that happens
+// in this day
+func (n *Note) GetStampHour(date time.Time) string {
+	stamp := n.GetStampForDay(date)
+	if stamp.Hour() == 0 && stamp.Minute() == 0 {
+		return ""
 	}
-	s = s + "\n\n"
-	return s
+	return stamp.Format(HOURFORMATPRINT)
 }
 
-/*
-// Recover cached notes (from datastore by now)
-func LoadCachedNotes() ([]Note, error) {
-	notes := make([]Note, 0)
-
-	return notes, nil
-}
-*/
-
-/*
-
-   Org mode
-
-*/
-
-var noteTitleReg = regexp.MustCompile("(?m)^(\\*{1,3} .+\\n)")
-var separator = "@@@@\n"
-var separatorReg = regexp.MustCompile("(?m)^@@@@\\n")
-var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?\\>")
-
-// Parse string content in org mode and recover notes from it
-func Parse(content string) []Note {
-	notes := make([]Note, 0)
-
-	content = noteTitleReg.ReplaceAllString(content, separator+"$1")
-	rawNotes := separatorReg.Split(content, -1)
-
-	for _, rnote := range rawNotes {
-		note := new(Note)
-		note.Title = parseTitle(rnote)
-		note.Body = parseBody(rnote)
-		note.Stamps = parseStamps(rnote)
-
-		notes = append(notes, *note)
-	}
-
-	return notes
-}
-
-func parseTitle(orgnote string) string {
-	title := noteTitleReg.FindString(orgnote)
-	prefix := regexp.MustCompile("(?m)^\\*+")
-	return strings.Trim(prefix.ReplaceAllString(title, ""), " \n\t")
-}
-
-func parseBody(orgnote string) string {
-	body := noteTitleReg.ReplaceAllString(orgnote, "")
-	body = dateReg.ReplaceAllString(body, "")
-	return strings.Trim(body, " \n\t")
-}
-
-func parseStamps(orgnote string) []time.Time {
-
-	times := make([]time.Time, 0)
-	rawTimes := dateReg.FindAllString(orgnote, -1)
-
-	for _, rt := range rawTimes {
-		r := regexp.MustCompile(" [a-záéíóú]{3}")
-		rt = r.ReplaceAllString(rt, "")
-		var t time.Time
-		var err error
-		if strings.Contains(rt, ":") {
-			t, err = time.Parse("<2006-01-02 15:04>", rt)
-		} else {
-			t, err = time.Parse("<2006-01-02>", rt)
-		}
-		if err == nil {
-			times = append(times, t)
+// Return if a note have a stamp which happens in this day
+func (n *Note) InDay(date time.Time) bool {
+	for _, stamp := range n.Stamps {
+		md := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 1, 0, time.UTC)
+		diffMd := int(stamp.Sub(md).Hours())
+		if stamp == date || (diffMd < 24 && diffMd > 0) {
+			return true
 		}
 	}
-
-	return times
+	return false
 }
 
-/*
-
-Old agenda Code
-===============
-
-
-func NewAgenda() *Agenda {
-	a := new(Agenda)
-	return a
-}
-
-
-func (a *Agenda) FilterNotes(date time.Time) []Note {
-	filter := make([]Note, 0)
-	for _, note := range a.AllNotes {
-		for _, stamp := range note.Stamps {
-			day := date
-			past := date.AddDate(0, 0, -1)
-
-			if past.Before(stamp) && day.After(stamp) {
-				filter = append(filter, note)
-			}
+// Get the stamp of the note for this day
+func (n *Note) GetStampForDay(date time.Time) time.Time {
+	for _, stamp := range n.Stamps {
+		md := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 1, 0, time.UTC)
+		diffMd := int(stamp.Sub(md).Hours())
+		if stamp == date || (diffMd < 24 && diffMd > 0) {
+			return stamp
 		}
 	}
-	return filter
+	return time.Date(1982, time.August, 20, 20, 45, 0, 0, time.UTC)
 }
 
-func (a *Agenda) Build() {
-	now := time.Now()
-	basetime := time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 0, time.UTC)
-	c := 0
-	a.Sched = make([]Day, NEXT_DAYS)
-	for c < NEXT_DAYS {
-		a.Sched[c].Tm = basetime.AddDate(0, 0, c)
-		a.Sched[c].TmStr = a.Sched[c].Tm.Format(DATEFORMATPRINT)
-		a.Sched[c].SchedDay = a.FilterNotes(a.Sched[c].Tm)
-		c++
+// DayNotes sort a group of notes for a particular day
+type DayNotes struct {
+	Date  time.Time
+	Notes []Note
+}
+
+func NewDayNotes(date time.Time) *DayNotes {
+	dn := new(DayNotes)
+	dn.Notes = make([]Note, 0)
+	dn.Date = date
+	return dn
+}
+
+func (dn *DayNotes) Add(note Note) {
+	if note.InDay(dn.Date) {
+		dn.Notes = append(dn.Notes, note)
 	}
-}*/
+}
+
+func (dn *DayNotes) Len() int {
+	return len(dn.Notes)
+}
+
+func (dn *DayNotes) Less(i, j int) bool {
+	return dn.Notes[i].GetStampForDay(dn.Date).Before(dn.Notes[j].GetStampForDay(dn.Date))
+}
+
+func (dn *DayNotes) Swap(i, j int) {
+	dn.Notes[i], dn.Notes[j] = dn.Notes[j], dn.Notes[i]
+}

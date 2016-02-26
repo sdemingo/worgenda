@@ -1,15 +1,16 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">{{.Date}}</h3>
+    <h3 class="panel-title">{{.StringDate}}</h3>
   </div>
   <div class="panel-body">
    {{ if not .Events }}
     <p>No hay eventos</p>
     {{else}}
     <div class="list-group">
+   {{ $date:=.Date }}
    {{range .Events}}
-      <a href="#" class="list-group-item">
-	<h4 class="list-group-item-heading">{{.Title}}</h4>
+      <a href="" class="list-group-item">
+	<h4 class="list-group-item-heading"> <small>{{.GetStampHour $date}}</small> {{.Title}}</h4>
 	<p class="list-group-item-text">{{.Body}}</p>
       </a>
    {{end}}

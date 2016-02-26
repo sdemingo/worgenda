@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sort"
 	"text/template"
 	"time"
 
@@ -38,18 +39,19 @@ func GetEvents(w http.ResponseWriter, r *http.Request) {
 	s := buf.String() // Does a complete copy of the bytes in the buffer.
 	date, _ := time.Parse(DATEFORMATPRINT, s)
 
-	notes := make([]Note, 0)
+	//notes := make([]Note, 0)
+	dayNotes := NewDayNotes(date)
 	for _, note := range AllNotes {
-		for _, stamp := range note.Stamps {
-			if stamp == date {
-				notes = append(notes, note)
-			}
+		if note.InDay(date) {
+			dayNotes.Add(note)
 		}
 	}
 
+	sort.Sort(dayNotes)
 	var contents = map[string]interface{}{
-		"Date":   date.Format(DATEFORMATFORHTML),
-		"Events": notes,
+		"StringDate": date.Format(DATEFORMATFORHTML),
+		"Date":       date,
+		"Events":     dayNotes.Notes,
 	}
 
 	// Write template
