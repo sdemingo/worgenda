@@ -48,6 +48,10 @@ func (n *Note) GetResumeBody() string {
 	}
 }
 
+func (n *Note) GetHTMLBody() string {
+	return Org2HTML([]byte(n.Body), "")
+}
+
 // Return if a note have a stamp which happens in this day
 func (n *Note) InDay(date time.Time) bool {
 	for _, stamp := range n.Stamps {
