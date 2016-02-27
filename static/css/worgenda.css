@@ -24,10 +24,18 @@ body {
 
 
 .dp-marked-date .ui-state-default {
-    background: #484;
+    background: #4682B4;
     color: #FFF;
 }
 
+#event h3{
+    max-width:80%;
+}
+
+#day-events .event-hour{
+    display:inline-block;
+    margin:5px 0 5px 0;
+}
 
 
 /* How to remove Firefox's dotted outline on buttons */

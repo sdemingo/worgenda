@@ -79,6 +79,8 @@ function markDates(date) {
 function loadHTML(html){
     $("#content").html(html)
 
+    localNames()
+
     //default events
     $("#event .close-event").on("click",function(e){
 	e.preventDefault()
@@ -104,3 +106,32 @@ function loadHTML(html){
 	})  	
     })
 }
+
+
+
+function localNames(){
+    $(".panel-title").each(function(i){
+	var title=$(this).html()
+	title=title.replace("Monday","Lunes")
+	    .replace("Tuesday","Martes")
+	    .replace("Wednesday","Miércoles")
+	    .replace("Thursday","Jueves")
+	    .replace("Friday","Viernes")
+	    .replace("Saturday","Sábado")
+	    .replace("Sunday","Domingo")
+
+	    .replace("January","Enero")
+	    .replace("February","Febrero")
+	    .replace("March","Marzo")
+	    .replace("April","Abril")
+	    .replace("May","Mayo")
+	    .replace("June","Junio")
+	    .replace("July","Julio")
+	    .replace("Agoust","Agosto")
+	    .replace("September","Septiembre")
+	    .replace("October","Octubre")
+	    .replace("November","Noviembre")
+	    .replace("December","Diciembre")
+	$(this).html(title)
+    })
+	}
