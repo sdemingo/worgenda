@@ -1,0 +1,20 @@
+<div id="event" class="panel panel-default">
+  <div class="panel-heading clearfix">
+    <div class="btn-group pull-right">
+      <a href="" class="btn btn-default btn-sm close-event">
+	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+      </a>
+    </div>
+    {{$hour:= .Event.GetStampHour .Date}}
+    {{if $hour}}
+    <h3 class="panel-title">Evento para el {{.StringDate}} a las {{$hour}}</h3>
+    {{else}}
+    <h3 class="panel-title">Evento para el {{.StringDate}}</h3>
+    {{end}}
+  </div>
+  <div class="panel-body">
+    <p class="list-group-item-text"><strong>{{.Event.Title}}</strong></p>
+    <p></p>
+    <p class="list-group-item-text">{{.Event.GetHTMLBody}}</p>
+  </div>
+</div>

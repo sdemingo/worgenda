@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strconv"
 	"text/template"
 	"time"
 
@@ -56,6 +57,46 @@ func GetEvents(w http.ResponseWriter, r *http.Request) {
 
 	// Write template
 	tmpl := template.Must(template.ParseFiles("model/notes/tmpl/day-events.html"))
+	if err := tmpl.Execute(w, contents); err != nil {
+		log.Printf("%v", err)
+		return
+	}
+}
+
+func GetEvent(w http.ResponseWriter, r *http.Request) {
+	_, err := app.GetSession(r)
+	if err != nil {
+		app.Exit(w, r)
+		return
+	}
+
+	r.ParseForm()
+	date, err := time.Parse(DATEFORMATPRINT, r.FormValue("date"))
+	if err != nil {
+		log.Printf("notes: getevent: bad date: %v", err)
+		return
+	}
+
+	id64, err := strconv.ParseInt(r.FormValue("id"), 10, 64)
+	if err != nil {
+		log.Printf("notes: getevent: bad id: %v", err)
+		return
+	}
+
+	id := int(id64)
+	if id < 0 || id >= len(AllNotes) {
+		log.Printf("notes: getevent: bad id: %v", err)
+		return
+	}
+
+	var contents = map[string]interface{}{
+		"StringDate": date.Format(DATEFORMATFORHTML),
+		"Date":       date,
+		"Event":      &AllNotes[id],
+	}
+
+	// Write template
+	tmpl := template.Must(template.ParseFiles("model/notes/tmpl/event.html"))
 	if err := tmpl.Execute(w, contents); err != nil {
 		log.Printf("%v", err)
 		return

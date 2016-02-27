@@ -23,6 +23,7 @@ func main() {
 	http.HandleFunc("/welcome", notes.Main)
 	http.HandleFunc("/notes/dates", notes.GetMarkDates)
 	http.HandleFunc("/notes/events", notes.GetEvents)
+	http.HandleFunc("/notes/event", notes.GetEvent)
 
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
