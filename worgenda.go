@@ -15,7 +15,7 @@ const (
 	PORT       = ":8080"
 	PRIV_KEY   = "/var/private_key"
 	PUBLIC_KEY = "/var/public_key"
-	DOMAIN     = "192.168.1.107"
+	DOMAIN     = "localhost"
 )
 
 func main() {
