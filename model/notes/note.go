@@ -1,7 +1,7 @@
 package notes
 
 import (
-	"log"
+	"math/rand"
 	"strings"
 	"time"
 )
@@ -17,29 +17,30 @@ const (
 
 var AllNotes []Note
 
-func init() {
-	// Load notes from source (dropbox)
-	dc, err := GetDropboxConfig()
-	if err != nil {
-		log.Panic(err)
-	}
-	content, err := ReadFile(dc, "prueba.org")
-	if err != nil {
-		log.Panic(err)
-	}
-	AllNotes = Parse(content)
-	log.Printf("All notes are loaded")
-}
-
 type Note struct {
-	Id     int
+	Id     int64
 	Title  string
 	Body   string
 	Stamps []time.Time
+	Source string
+}
+
+func NewNote() *Note {
+	n := new(Note)
+	n.Id = rand.Int63()
+	return n
+}
+
+func GetNote(id int64) *Note {
+	for i := range AllNotes {
+		if AllNotes[i].Id == id {
+			return &AllNotes[i]
+		}
+	}
+	return nil
 }
 
 func (n *Note) GetResumeBody() string {
-
 	words := strings.Fields(n.Body)
 	if len(words) < MAXWORDSRESUMEBODY {
 		return strings.Join(words, " ")

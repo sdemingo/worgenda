@@ -37,6 +37,9 @@ func main() {
 		}
 	}()
 
+	// Run sync goroutine
+	go notes.Sync()
+
 	// Listen on secure port
 	err := http.ListenAndServeTLS(TLSPORT, PUBLIC_KEY, PRIV_KEY, nil)
 	if err != nil {

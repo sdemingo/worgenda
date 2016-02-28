@@ -3,10 +3,17 @@ package notes
 import (
 	"bytes"
 	"encoding/json"
+	"log"
+	"time"
 	//"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/stacktic/dropbox"
+)
+
+const (
+	TIMESYNCSOURCES = 1 * time.Minute
 )
 
 type DropboxConfig struct {
@@ -14,6 +21,38 @@ type DropboxConfig struct {
 	AppSecret string
 	Token     string
 	Files     []string
+}
+
+func Sync() {
+	dc, err := GetDropboxConfig()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	for {
+		readSources(dc)
+		time.Sleep(TIMESYNCSOURCES)
+	}
+}
+
+func readSources(config *DropboxConfig) {
+	newNotes := make([]Note, 0)
+	for _, file := range config.Files {
+		fcontent, err := ReadFile(config, file)
+		if err != nil {
+			log.Printf("notes: sync: %v", err)
+			continue
+		}
+
+		notes := Parse(fcontent)
+		for i := range notes {
+			notes[i].Source = filepath.Base(file)
+			newNotes = append(newNotes, notes[i])
+		}
+	}
+
+	AllNotes = newNotes
+	log.Println("Sources was syncing succesfully")
 }
 
 func GetDropboxConfig() (*DropboxConfig, error) {

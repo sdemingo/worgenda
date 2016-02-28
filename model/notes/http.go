@@ -121,8 +121,8 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id := int(id64)
-	if id < 0 || id >= len(AllNotes) {
+	note := GetNote(id64)
+	if note == nil {
 		log.Printf("notes: getevent: bad id: %v", err)
 		return
 	}
@@ -130,7 +130,7 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 	var contents = map[string]interface{}{
 		"StringDate": date.Format(DATEFORMATFORHTML),
 		"Date":       date,
-		"Event":      &AllNotes[id],
+		"Event":      note,
 	}
 
 	// Write template

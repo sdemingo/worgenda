@@ -22,9 +22,8 @@ func Parse(content string) []Note {
 	content = noteTitleReg.ReplaceAllString(content, separator+"$1")
 	rawNotes := separatorReg.Split(content, -1)
 
-	for i, rnote := range rawNotes {
-		note := new(Note)
-		note.Id = i
+	for _, rnote := range rawNotes {
+		note := NewNote()
 		note.Title = parseTitle(rnote)
 		note.Body = parseBody(rnote)
 		note.Stamps = parseStamps(rnote)
