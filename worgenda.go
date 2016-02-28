@@ -35,7 +35,7 @@ func main() {
 	http.HandleFunc("/notes/event", notes.GetEvent)
 	http.HandleFunc("/notes/new", notes.NewEventForm)
 
-	fs := http.FileServer(http.Dir("static"))
+	fs := http.FileServer(http.Dir(dir + "/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// Redirect all requests to TLS socket
