@@ -1,6 +1,7 @@
 package app
 
 import (
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -37,4 +38,11 @@ func GetUser(key string) (*User, error) {
 		}
 	}
 	return nil, fmt.Errorf("app: user not found")
+}
+
+func (u *User) PasswordOk(pass string) bool {
+	h := md5.New()
+	h.Write([]byte(pass))
+	hpass := fmt.Sprintf("%x", h.Sum(nil))
+	return u.Password == hpass
 }

@@ -12,7 +12,7 @@ const (
 	PORT       = ":8080"
 	PRIV_KEY   = "./var/private_key"
 	PUBLIC_KEY = "./var/public_key"
-	DOMAIN     = "localhost"
+	DOMAIN     = "192.168.1.107"
 )
 
 func main() {
@@ -24,6 +24,7 @@ func main() {
 	http.HandleFunc("/notes/dates", notes.GetMarkDates)
 	http.HandleFunc("/notes/events", notes.GetEvents)
 	http.HandleFunc("/notes/event", notes.GetEvent)
+	http.HandleFunc("/notes/new", notes.NewEventForm)
 
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

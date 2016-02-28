@@ -1,7 +1,6 @@
 package notes
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -28,19 +27,54 @@ func Main(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetEvents(w http.ResponseWriter, r *http.Request) {
+func NewEventForm(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("X-Requested-With") != "XMLHttpRequest" {
+		http.NotFound(w, r)
+		return
+	}
 	_, err := app.GetSession(r)
 	if err != nil {
 		app.Exit(w, r)
 		return
 	}
 
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(r.Body)
-	s := buf.String() // Does a complete copy of the bytes in the buffer.
-	date, _ := time.Parse(DATEFORMATPRINT, s)
+	var contents map[string]interface{}
 
-	//notes := make([]Note, 0)
+	r.ParseForm()
+	date, err := time.Parse(DATEFORMATPRINT, r.FormValue("date"))
+	if err == nil {
+		contents = map[string]interface{}{
+			"StringDate": date.Format(DATEFORMATFORHTML),
+			"Date":       date,
+		}
+	}
+
+	// Write template
+	tmpl := template.Must(template.ParseFiles("model/notes/tmpl/new-event.html"))
+	if err := tmpl.Execute(w, contents); err != nil {
+		log.Printf("%v", err)
+		return
+	}
+}
+
+func GetEvents(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("X-Requested-With") != "XMLHttpRequest" {
+		http.NotFound(w, r)
+		return
+	}
+	_, err := app.GetSession(r)
+	if err != nil {
+		app.Exit(w, r)
+		return
+	}
+
+	r.ParseForm()
+	date, err := time.Parse(DATEFORMATPRINT, r.FormValue("date"))
+	if err != nil {
+		log.Printf("notes: getevent: bad date: %v", err)
+		return
+	}
+
 	dayNotes := NewDayNotes(date)
 	for _, note := range AllNotes {
 		if note.InDay(date) {
@@ -64,6 +98,10 @@ func GetEvents(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetEvent(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("X-Requested-With") != "XMLHttpRequest" {
+		http.NotFound(w, r)
+		return
+	}
 	_, err := app.GetSession(r)
 	if err != nil {
 		app.Exit(w, r)
@@ -104,6 +142,10 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetMarkDates(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("X-Requested-With") != "XMLHttpRequest" {
+		http.NotFound(w, r)
+		return
+	}
 	_, err := app.GetSession(r)
 	if err != nil {
 		app.Exit(w, r)

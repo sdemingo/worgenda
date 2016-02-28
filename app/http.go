@@ -43,7 +43,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.Form.Get("password")
 
 	user, err := GetUser(username)
-	if err != nil || user.Password != password {
+	if err != nil || !user.PasswordOk(password) {
+		log.Printf("Failed login for user %s", username)
 		Exit(w, r)
 		return
 	}
