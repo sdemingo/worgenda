@@ -11,14 +11,14 @@ body {
 
 #datepicker{
     height:100%;
-    font-size: 150.5%; 
+    font-size: 1.5em;
     margin-bottom:20px;
 }
 
 
 @media (max-width:400px){
     #datepicker{
-	font-size: 100%; 
+	font-size: 1.2em;
     }
 }
 
@@ -34,7 +34,7 @@ body {
 
 #day-events .event-hour{
     display:inline-block;
-    margin:5px 0 5px 0;
+    margin:5px 3px 5px 3px;
 }
 
 

@@ -27,6 +27,12 @@ $(document).ready(function(){
     getEventsForADate(today)
 })
 
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+}
+
 
 function getMarkDates(){
 
@@ -49,14 +55,14 @@ function getMarkDates(){
 }
 
 function getEventsForADate(sdate){
-    
+    W.currentDate=sdate
+
     $.ajax({
     	url:"/notes/events",
     	type: 'post',
-	data: sdate,
+	data: "date="+sdate,
     	success: function (html){
 	    loadHTML(html)
-	    W.currentDate=sdate
 	},
     	error: function(error){
 	    console.log(error)
@@ -82,17 +88,43 @@ function loadHTML(html){
     localNames()
 
     //default events
-    $("#event .close-event").on("click",function(e){
+    $(".close-event").on("click",function(e){
 	e.preventDefault()
 	getEventsForADate(W.currentDate)	
     })
 
-    $("#day-events a").on("click",function(e){
+    $(".new-event").on("click",function(e){
 	e.preventDefault()
-	
-	var href=$(this).attr("href")
-	console.log(href)
+	$.ajax({
+    	    url:"/notes/new",
+    	    type: 'post',
+	    data: "date="+W.currentDate,
+    	    success: function (html){
+		loadHTML(html)
+	    },
+    	    error: function(error){
+		console.log(error)
+	    }
+	})  	
+    })
 
+    $(".new-note").on("click",function(e){
+	e.preventDefault()
+	$.ajax({
+    	    url:"/notes/new",
+    	    type: 'post',
+    	    success: function (html){
+		loadHTML(html)
+	    },
+    	    error: function(error){
+		console.log(error)
+	    }
+	})  	
+    })
+
+    $("#day-events .list-group a").on("click",function(e){
+	e.preventDefault()
+	var href=$(this).attr("href")
 	$.ajax({
     	    url:href,
     	    type: 'post',
