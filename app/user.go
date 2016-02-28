@@ -4,31 +4,31 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 )
 
 var userTable []*User
 
-func init() {
-	var err error
-	userTable = make([]*User, 0)
-
-	usersDb, err := os.Open("./var/users.json")
-	if err != nil {
-		log.Panic(err)
-	}
-
-	usersJs := json.NewDecoder(usersDb)
-	if err = usersJs.Decode(&userTable); err != nil {
-		log.Panic(err)
-	}
-}
-
 type User struct {
 	Fullname string
 	Username string
 	Password string
+}
+
+func LoadUsers() error {
+	var err error
+	userTable = make([]*User, 0)
+
+	usersDb, err := os.Open(AppDir + "/var/users.json")
+	if err != nil {
+		return err
+	}
+
+	usersJs := json.NewDecoder(usersDb)
+	if err = usersJs.Decode(&userTable); err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetUser(key string) (*User, error) {

@@ -3,6 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+
 	"worgenda/app"
 	"worgenda/model/notes"
 )
@@ -10,15 +13,21 @@ import (
 const (
 	TLSPORT    = ":8443"
 	PORT       = ":8080"
-	PRIV_KEY   = "./var/private_key"
-	PUBLIC_KEY = "./var/public_key"
+	PRIV_KEY   = "/var/private_key"
+	PUBLIC_KEY = "/var/public_key"
 	DOMAIN     = "192.168.1.107"
 )
 
 func main() {
-	log.Printf("Run worgenda")
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Panic(err)
+		return
+	}
 
-	app.Run()
+	log.Printf("Run worgenda on %s", dir)
+
+	app.Run(dir)
 
 	http.HandleFunc("/welcome", notes.Main)
 	http.HandleFunc("/notes/dates", notes.GetMarkDates)
@@ -41,7 +50,7 @@ func main() {
 	go notes.Sync()
 
 	// Listen on secure port
-	err := http.ListenAndServeTLS(TLSPORT, PUBLIC_KEY, PRIV_KEY, nil)
+	err = http.ListenAndServeTLS(TLSPORT, dir+PUBLIC_KEY, dir+PRIV_KEY, nil)
 	if err != nil {
 		panic("Error: " + err.Error())
 	}

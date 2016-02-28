@@ -6,7 +6,13 @@ import (
 	"text/template"
 )
 
-func Run() {
+var AppDir string
+
+func Run(appdir string) {
+	AppDir = appdir
+
+	LoadUsers()
+
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/logout", logoutHandler)
@@ -23,7 +29,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("./app/tmpl/login.html"))
+	tmpl := template.Must(template.ParseFiles(AppDir + "/app/tmpl/login.html"))
 	if err := tmpl.Execute(w, nil); err != nil {
 		log.Printf("%v", err)
 		return

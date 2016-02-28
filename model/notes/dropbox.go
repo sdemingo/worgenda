@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
-	"time"
-	//"fmt"
 	"os"
 	"path/filepath"
+	"time"
+
+	"worgenda/app"
 
 	"github.com/stacktic/dropbox"
 )
@@ -58,7 +59,7 @@ func readSources(config *DropboxConfig) {
 func GetDropboxConfig() (*DropboxConfig, error) {
 	config := new(DropboxConfig)
 
-	configFile, err := os.Open("var/config.json")
+	configFile, err := os.Open(app.AppDir + "/var/config.json")
 	if err != nil {
 		return nil, err
 	}

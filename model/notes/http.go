@@ -20,7 +20,7 @@ func Main(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("model/notes/tmpl/agenda.html"))
+	tmpl := template.Must(template.ParseFiles(app.AppDir + "/model/notes/tmpl/agenda.html"))
 	if err := tmpl.Execute(w, nil); err != nil {
 		log.Printf("%v", err)
 		return
@@ -50,7 +50,7 @@ func NewEventForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Write template
-	tmpl := template.Must(template.ParseFiles("model/notes/tmpl/new-event.html"))
+	tmpl := template.Must(template.ParseFiles(app.AppDir + "/model/notes/tmpl/new-event.html"))
 	if err := tmpl.Execute(w, contents); err != nil {
 		log.Printf("%v", err)
 		return
@@ -90,7 +90,7 @@ func GetEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Write template
-	tmpl := template.Must(template.ParseFiles("model/notes/tmpl/day-events.html"))
+	tmpl := template.Must(template.ParseFiles(app.AppDir + "/model/notes/tmpl/day-events.html"))
 	if err := tmpl.Execute(w, contents); err != nil {
 		log.Printf("%v", err)
 		return
@@ -134,7 +134,7 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Write template
-	tmpl := template.Must(template.ParseFiles("model/notes/tmpl/event.html"))
+	tmpl := template.Must(template.ParseFiles(app.AppDir + "/model/notes/tmpl/event.html"))
 	if err := tmpl.Execute(w, contents); err != nil {
 		log.Printf("%v", err)
 		return
