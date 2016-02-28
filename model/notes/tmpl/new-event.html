@@ -1,0 +1,17 @@
+<div id="event" class="panel panel-default">
+  <div class="panel-heading clearfix">
+    <div class="btn-group pull-right">
+      <a href="" class="btn btn-default btn-sm close-event">
+	<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+      </a>
+    </div>
+    {{if .StringDate}}
+    <h3 class="panel-title">Nuevo evento para el {{.StringDate}}</h3>
+    {{else}}
+    <h3 class="panel-title">Nueva nota</h3>
+    {{end}}
+  </div>
+  <div class="panel-body">
+    <p class="list-group-item-text">Esta funcionalidad aún no está preparada</p>
+  </div>
+</div>

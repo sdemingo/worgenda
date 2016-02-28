@@ -4,6 +4,7 @@
   <head>
     <title>Worgenda</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/overcast/jquery-ui.css">
     <link rel="stylesheet" href="/static/css/worgenda.css">
@@ -29,7 +30,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav pull-right">
-            <li><a href="#">Crea Nota</a></li>
+            <li><a class="new-note" href="">Crea Nota</a></li>
             <li><a href="/logout">Salir</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -37,9 +38,9 @@
     </nav>
 
     <div class="container">
-      <div id="datepicker" class="row col-xs-12 col-md-5">
-      </div>
-      <div id="content" class="row col-xs-12 col-md-7">
+      <!--  <div id="datepicker" class="row col-xs-12 row col-sm-12 col-md-5">
+      </div>-->
+      <div id="content" class="row col-xs-12 row col-sm-12 col-md-7">
       </div>
     </div>
 
