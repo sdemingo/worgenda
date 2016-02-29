@@ -45,11 +45,10 @@ function getMarkDates(){
 		W.datesMarked.push(new Date(dates[i]))
 	    }
 
-	    console.log(W.datesMarked)
 	    $("#datepicker").datepicker( "refresh" )
 	},
     	error: function(error){
-	    console.log(error)
+	    window.location.href="/"
 	}
     })
 }
@@ -65,7 +64,7 @@ function getEventsForADate(sdate){
 	    loadHTML(html)
 	},
     	error: function(error){
-	    console.log(error)
+	    window.location.href="/"
 	}
     })    
 }
@@ -103,7 +102,7 @@ function loadHTML(html){
 		loadHTML(html)
 	    },
     	    error: function(error){
-		console.log(error)
+		window.location.href="/"
 	    }
 	})  	
     })
@@ -117,7 +116,7 @@ function loadHTML(html){
 		loadHTML(html)
 	    },
     	    error: function(error){
-		console.log(error)
+		window.location.href="/"
 	    }
 	})  	
     })
@@ -133,7 +132,7 @@ function loadHTML(html){
 		loadHTML(html)
 	    },
     	    error: function(error){
-		console.log(error)
+		window.location.href="/"
 	    }
 	})  	
     })

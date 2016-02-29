@@ -19,7 +19,33 @@ func Run(appdir string) {
 }
 
 func Exit(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/", http.StatusFound)
+	//http.Redirect(w, r, "/", http.StatusNotFound)
+	errorHandler(w, r, http.StatusNotFound)
+}
+
+func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
+	_, err := GetSession(r)
+	if err != nil {
+		Exit(w, r)
+		return
+	}
+
+	tmpl := template.Must(template.ParseFiles("model/agenda/tmpl/agenda.html"))
+	if err := tmpl.Execute(w, nil); err != nil {
+		log.Printf("%v", err)
+		return
+	}
+}
+
+func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
+	w.WriteHeader(status)
+	if status == http.StatusNotFound {
+		tmpl := template.Must(template.ParseFiles(AppDir + "/app/tmpl/error404.html"))
+		if err := tmpl.Execute(w, nil); err != nil {
+			log.Printf("%v", err)
+			return
+		}
+	}
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -70,20 +96,6 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	DeleteSession(r)
 	Exit(w, r)
-}
-
-func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := GetSession(r)
-	if err != nil {
-		Exit(w, r)
-		return
-	}
-
-	tmpl := template.Must(template.ParseFiles("model/agenda/tmpl/agenda.html"))
-	if err := tmpl.Execute(w, nil); err != nil {
-		log.Printf("%v", err)
-		return
-	}
 }
 
 func welcome(w http.ResponseWriter, r *http.Request) {
