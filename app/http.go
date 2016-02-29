@@ -19,7 +19,6 @@ func Run(appdir string) {
 }
 
 func Exit(w http.ResponseWriter, r *http.Request) {
-	//http.Redirect(w, r, "/", http.StatusNotFound)
 	errorHandler(w, r, http.StatusNotFound)
 }
 

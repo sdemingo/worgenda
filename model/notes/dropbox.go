@@ -52,8 +52,7 @@ func readSources(config *DropboxConfig) {
 		}
 	}
 
-	AllNotes = newNotes
-	log.Println("Sources was syncing succesfully")
+	AllNotes.Build(newNotes)
 }
 
 func GetDropboxConfig() (*DropboxConfig, error) {

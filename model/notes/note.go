@@ -15,8 +15,6 @@ const (
 	MAXWORDSRESUMEBODY = 20
 )
 
-var AllNotes []Note
-
 type Note struct {
 	Id     int64
 	Title  string
@@ -29,15 +27,6 @@ func NewNote() *Note {
 	n := new(Note)
 	n.Id = rand.Int63()
 	return n
-}
-
-func GetNote(id int64) *Note {
-	for i := range AllNotes {
-		if AllNotes[i].Id == id {
-			return &AllNotes[i]
-		}
-	}
-	return nil
 }
 
 func (n *Note) GetResumeBody() string {

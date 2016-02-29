@@ -76,11 +76,7 @@ func GetEvents(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dayNotes := NewDayNotes(date)
-	for _, note := range AllNotes {
-		if note.InDay(date) {
-			dayNotes.Add(note)
-		}
-	}
+	AllNotes.GetNotesFromDate(dayNotes)
 
 	sort.Sort(dayNotes)
 	var contents = map[string]interface{}{
@@ -121,7 +117,7 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	note := GetNote(id64)
+	note := AllNotes.GetNote(id64)
 	if note == nil {
 		log.Printf("notes: getevent: bad id: %v", err)
 		return
@@ -152,21 +148,7 @@ func GetMarkDates(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dates := make(map[time.Time]bool)
-
-	for _, note := range AllNotes {
-		for _, stamp := range note.Stamps {
-			if ok, _ := dates[stamp]; !ok {
-				dates[stamp] = true
-			}
-		}
-	}
-
-	alldates := make([]string, 0, len(dates))
-	for date := range dates {
-		sdate := date.Format(DATEFORMATPRINT)
-		alldates = append(alldates, sdate)
-	}
+	alldates := AllNotes.GetBusyDates()
 
 	// Write json
 	w.Header().Set("Content-Type", "application/json")
