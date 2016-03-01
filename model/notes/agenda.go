@@ -9,7 +9,7 @@ var AllNotes *Agenda
 
 type Agenda struct {
 	Notebooks map[string]string
-	Notes     []Note
+	Notes     map[string][]Note
 	rMutex    sync.RWMutex
 	lastSync  time.Time
 }
@@ -20,7 +20,7 @@ func init() {
 
 func NewAgenda() *Agenda {
 	a := new(Agenda)
-	a.Notes = make([]Note, 0)
+	a.Notes = make(map[string][]Note)
 	a.Notebooks = make(map[string]string)
 	return a
 }
@@ -29,14 +29,17 @@ func (a *Agenda) GetNote(id int64) *Note {
 	a.rMutex.Lock()
 	defer a.rMutex.Unlock()
 
-	for i := range a.Notes {
-		if a.Notes[i].Id == id {
-			return &a.Notes[i]
+	for _, notes := range a.Notes {
+		for i := range notes {
+			if notes[i].Id == id {
+				return &notes[i]
+			}
 		}
 	}
 	return nil
 }
 
+/*
 func (a *Agenda) Build(notes []Note) error {
 	a.rMutex.RLock()
 	defer a.rMutex.RUnlock()
@@ -45,18 +48,20 @@ func (a *Agenda) Build(notes []Note) error {
 	a.lastSync = time.Now()
 	return nil
 }
-
+*/
 func (a *Agenda) AddNotebook(name string, content string) error {
 	a.rMutex.RLock()
 	defer a.rMutex.RUnlock()
 
 	notes := Parse(content)
+	a.Notes[name] = make([]Note, 0, len(notes))
 	for i := range notes {
 		notes[i].Source = name
-		a.Notes = append(a.Notes, notes[i])
+		a.Notes[name] = append(a.Notes[name], notes[i])
 	}
 
 	a.Notebooks[name] = content
+	a.lastSync = time.Now()
 
 	return nil
 }
@@ -72,11 +77,14 @@ func (a *Agenda) GetNotebooks() map[string]string {
 	return notebooks
 }
 
-func (a *Agenda) GetNotesFromDate(notes *DayNotes) {
+func (a *Agenda) GetNotesFromDate(daynotes *DayNotes) {
 	a.rMutex.Lock()
 	defer a.rMutex.Unlock()
-	for _, note := range a.Notes {
-		notes.Add(note)
+
+	for _, notes := range a.Notes {
+		for i := range notes {
+			daynotes.Add(notes[i])
+		}
 	}
 }
 
@@ -85,10 +93,12 @@ func (a *Agenda) GetBusyDates() []string {
 	defer a.rMutex.Unlock()
 
 	dates := make(map[time.Time]bool)
-	for _, note := range a.Notes {
-		for _, stamp := range note.Stamps {
-			if ok, _ := dates[stamp]; !ok {
-				dates[stamp] = true
+	for _, notes := range a.Notes {
+		for _, note := range notes {
+			for _, stamp := range note.Stamps {
+				if ok, _ := dates[stamp]; !ok {
+					dates[stamp] = true
+				}
 			}
 		}
 	}
