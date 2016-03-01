@@ -34,6 +34,7 @@ func main() {
 	http.HandleFunc("/notes/events", notes.GetEvents)
 	http.HandleFunc("/notes/event", notes.GetEvent)
 	http.HandleFunc("/notes/new", notes.NewEventForm)
+	http.HandleFunc("/notes/notebooks", notes.GetNotebooks)
 
 	fs := http.FileServer(http.Dir(dir + "/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

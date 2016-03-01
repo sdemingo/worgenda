@@ -159,3 +159,19 @@ func GetMarkDates(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprintf(w, "%s", string(jbody[:len(jbody)]))
 }
+
+func GetNotebooks(w http.ResponseWriter, r *http.Request) {
+	_, err := app.GetSession(r)
+	if err != nil {
+		app.Exit(w, r)
+		return
+	}
+
+	notebooks := AllNotes.GetNotebooks()
+	// Write template
+	tmpl := template.Must(template.ParseFiles(app.AppDir + "/model/notes/tmpl/notebooks.html"))
+	if err := tmpl.Execute(w, notebooks); err != nil {
+		log.Printf("%v", err)
+		return
+	}
+}

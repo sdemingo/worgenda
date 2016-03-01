@@ -37,6 +37,11 @@ body {
     margin:5px 3px 5px 3px;
 }
 
+pre{
+    white-space: pre-wrap;
+    word-break: normal;
+}
+
 
 /* How to remove Firefox's dotted outline on buttons */
 a:focus, a:active, 
@@ -70,4 +75,28 @@ footer {
     background-color: black;
     color: #FFF;
     font-size:0.9em;
+}
+
+
+
+
+/*Hide CSS*/
+#tabs { 
+    padding: 0px; 
+    background: none; 
+    border-width: 0px; 
+} 
+#tabs .ui-tabs-nav { 
+    padding-left: 0px; 
+    background: transparent; 
+    border-width: 0px 0px 1px 0px; 
+    -moz-border-radius: 0px; 
+    -webkit-border-radius: 0px; 
+    border-radius: 0px; 
+} 
+
+#tabs .ui-tabs-panel { 
+    background: #f5f3e5 url(http://code.jquery.com/ui/1.8.23/themes/south-street/images/ui-bg_highlight-hard_100_f5f3e5_1x100.png) repeat-x scroll 50% top; 
+    border-width: 0px 1px 1px 1px; 
+    padding:5px;
 }

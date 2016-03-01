@@ -8,8 +8,10 @@ import (
 var AllNotes *Agenda
 
 type Agenda struct {
-	Notes  []Note
-	rMutex sync.RWMutex
+	Notebooks map[string]string
+	Notes     []Note
+	rMutex    sync.RWMutex
+	lastSync  time.Time
 }
 
 func init() {
@@ -19,6 +21,7 @@ func init() {
 func NewAgenda() *Agenda {
 	a := new(Agenda)
 	a.Notes = make([]Note, 0)
+	a.Notebooks = make(map[string]string)
 	return a
 }
 
@@ -39,7 +42,34 @@ func (a *Agenda) Build(notes []Note) error {
 	defer a.rMutex.RUnlock()
 
 	a.Notes = notes
+	a.lastSync = time.Now()
 	return nil
+}
+
+func (a *Agenda) AddNotebook(name string, content string) error {
+	a.rMutex.RLock()
+	defer a.rMutex.RUnlock()
+
+	notes := Parse(content)
+	for i := range notes {
+		notes[i].Source = name
+		a.Notes = append(a.Notes, notes[i])
+	}
+
+	a.Notebooks[name] = content
+
+	return nil
+}
+
+func (a *Agenda) GetNotebooks() map[string]string {
+	notebooks := make(map[string]string)
+	a.rMutex.Lock()
+	defer a.rMutex.Unlock()
+
+	for k, v := range a.Notebooks {
+		notebooks[k] = v
+	}
+	return notebooks
 }
 
 func (a *Agenda) GetNotesFromDate(notes *DayNotes) {
@@ -70,5 +100,4 @@ func (a *Agenda) GetBusyDates() []string {
 	}
 
 	return alldates
-
 }

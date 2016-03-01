@@ -37,7 +37,6 @@ func Sync() {
 }
 
 func readSources(config *DropboxConfig) {
-	newNotes := make([]Note, 0)
 	for _, file := range config.Files {
 		fcontent, err := ReadFile(config, file)
 		if err != nil {
@@ -45,14 +44,8 @@ func readSources(config *DropboxConfig) {
 			continue
 		}
 
-		notes := Parse(fcontent)
-		for i := range notes {
-			notes[i].Source = filepath.Base(file)
-			newNotes = append(newNotes, notes[i])
-		}
+		AllNotes.AddNotebook(filepath.Base(file), fcontent)
 	}
-
-	AllNotes.Build(newNotes)
 }
 
 func GetDropboxConfig() (*DropboxConfig, error) {

@@ -1,3 +1,4 @@
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -12,7 +13,7 @@
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="/static/js/worgenda.js"></script>
+    <script src="/static/js/worg-books.js"></script>
 
   </head>
   <body>
@@ -32,7 +33,7 @@
           <ul class="nav navbar-nav pull-right">
             <li><a class="new-note" href="">Crea Nota</a></li>
 	    <li><a class="new-note" href="">Logs</a></li>
-	    <li><a href="/notes/notebooks">Cuadernos</a></li>
+	    <li><a class="new-note" href="">Cuadernos</a></li>
             <li><a href="/logout">Salir</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -40,10 +41,26 @@
     </nav>
 
     <div class="container">
-      <div id="datepicker" class="row col-xs-12 row col-sm-12 col-md-5">
+      <div id="tabs">
+	<ul>
+        {{range $key, $value := .}}
+	  <li><a href="#tabs-{{$key}}">{{$key}}</a></li>
+        {{end}}
+	</ul>
+        {{range $key, $value := .}}
+	<div id="tabs-{{$key}}">
+	  <pre>{{$value}}</pre>
+	</div>
+        {{end}}
       </div>
-      <div id="content" class="row col-xs-12 row col-sm-12 col-md-7">
-      </div>
+
+      <!-- 
+      {{range $key, $value := .}}
+      <h3>Cuaderno {{$key}}</h3>
+      <pre>
+	{{$value}}
+      </pre>
+      {{end}} -->
     </div>
 
     <footer>
