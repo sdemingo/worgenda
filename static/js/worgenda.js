@@ -25,13 +25,11 @@ $(document).ready(function(){
     getMarkDates()
     var today=$.datepicker.formatDate(W.datepickerFormatLayout, new Date()) 
     getEventsForADate(today)
+
+    storeSession()
 })
 
-function getCookie(name) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
-}
+
 
 
 function getMarkDates(){
@@ -92,21 +90,6 @@ function loadHTML(html){
 	getEventsForADate(W.currentDate)	
     })
 
-    $(".new-event").on("click",function(e){
-	e.preventDefault()
-	$.ajax({
-    	    url:"/notes/new",
-    	    type: 'post',
-	    data: "date="+W.currentDate,
-    	    success: function (html){
-		loadHTML(html)
-	    },
-    	    error: function(error){
-		window.location.href="/"
-	    }
-	})  	
-    })
-
     $(".new-note").on("click",function(e){
 	e.preventDefault()
 	$.ajax({
@@ -140,29 +123,11 @@ function loadHTML(html){
 
 
 
+
 function localNames(){
     $(".panel-title").each(function(i){
 	var title=$(this).html()
-	title=title.replace("Monday","Lunes")
-	    .replace("Tuesday","Martes")
-	    .replace("Wednesday","Miércoles")
-	    .replace("Thursday","Jueves")
-	    .replace("Friday","Viernes")
-	    .replace("Saturday","Sábado")
-	    .replace("Sunday","Domingo")
-
-	    .replace("January","Enero")
-	    .replace("February","Febrero")
-	    .replace("March","Marzo")
-	    .replace("April","Abril")
-	    .replace("May","Mayo")
-	    .replace("June","Junio")
-	    .replace("July","Julio")
-	    .replace("Agoust","Agosto")
-	    .replace("September","Septiembre")
-	    .replace("October","Octubre")
-	    .replace("November","Noviembre")
-	    .replace("December","Diciembre")
+	title=localStringDate(title)
 	$(this).html(title)
     })
 	}
