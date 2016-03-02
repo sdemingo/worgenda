@@ -41,3 +41,10 @@ function localStringDate(datestr){
 
     return datestr
 }
+
+
+function showError(msg){
+    $("body").prepend('<div class="alert alert-danger alert-dismissible error-msg" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Error:</strong> '+msg+'</div>')
+    window.setTimeout(function() { $(".alert").alert('close'); }, 2000);
+
+		     }

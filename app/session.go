@@ -11,7 +11,7 @@ import (
 var sessionTable map[string]*Session
 
 const (
-	TIME_MAX_INACTIVE_SESSION  = 30 * time.Minute
+	TIME_MAX_INACTIVE_SESSION  = 6 * time.Hour
 	TIME_SESSIONCLEANER_PERIOD = 1 * time.Minute
 )
 

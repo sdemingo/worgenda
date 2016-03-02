@@ -122,3 +122,13 @@ footer {
 .no-events{
 	pointer-events: none;
 }
+
+
+.error-msg{
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    margin-left: -250px;
+    width: 500px;
+    z-index: 9999;
+}
