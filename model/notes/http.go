@@ -28,10 +28,6 @@ func Main(w http.ResponseWriter, r *http.Request) {
 }
 
 func NewEventForm(w http.ResponseWriter, r *http.Request) {
-	if r.Header.Get("X-Requested-With") != "XMLHttpRequest" {
-		http.NotFound(w, r)
-		return
-	}
 	_, err := app.GetSession(r)
 	if err != nil {
 		app.Exit(w, r)
@@ -41,7 +37,7 @@ func NewEventForm(w http.ResponseWriter, r *http.Request) {
 	var contents map[string]interface{}
 
 	r.ParseForm()
-	date, err := time.Parse(DATEFORMATPRINT, r.FormValue("date"))
+	date, err := time.Parse(DATEFORMATGETPARAM, r.FormValue("date"))
 	if err == nil {
 		contents = map[string]interface{}{
 			"StringDate": date.Format(DATEFORMATFORHTML),
@@ -80,9 +76,10 @@ func GetEvents(w http.ResponseWriter, r *http.Request) {
 
 	sort.Sort(dayNotes)
 	var contents = map[string]interface{}{
-		"StringDate": date.Format(DATEFORMATFORHTML),
-		"Date":       date,
-		"Events":     dayNotes.Notes,
+		"FormParamDate": date.Format(DATEFORMATGETPARAM),
+		"StringDate":    date.Format(DATEFORMATFORHTML),
+		"Date":          date,
+		"Events":        dayNotes.Notes,
 	}
 
 	// Write template

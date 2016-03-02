@@ -42,6 +42,11 @@ pre{
     word-break: normal;
 }
 
+textarea{
+    min-height:400px;
+    resize: none;
+}
+
 
 /* How to remove Firefox's dotted outline on buttons */
 a:focus, a:active, 
@@ -99,4 +104,21 @@ footer {
     background: #f5f3e5 url(http://code.jquery.com/ui/1.8.23/themes/south-street/images/ui-bg_highlight-hard_100_f5f3e5_1x100.png) repeat-x scroll 50% top; 
     border-width: 0px 1px 1px 1px; 
     padding:5px;
+}
+
+
+.smaller-screen-sep{
+    display:none;
+}
+
+@media (max-width: 400px) {
+    .smaller-screen-sep {
+	display:block;
+        min-height:10px;
+    }
+}
+
+
+.no-events{
+	pointer-events: none;
 }
