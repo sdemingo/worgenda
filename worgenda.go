@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +19,8 @@ const (
 	DOMAIN     = "localhost"
 )
 
+var domain = flag.String("d", "localhost", "app working domain or ip")
+
 func main() {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
@@ -25,7 +28,9 @@ func main() {
 		return
 	}
 
-	log.Printf("Run worgenda on %s", dir)
+	flag.Parse()
+
+	log.Printf("Run worgenda over %s and %s", *domain, dir)
 
 	app.Run(dir)
 
@@ -41,7 +46,7 @@ func main() {
 
 	// Redirect all requests to TLS socket
 	go func() {
-		err := http.ListenAndServe(PORT, http.RedirectHandler("https://"+DOMAIN+TLSPORT, http.StatusFound))
+		err := http.ListenAndServe(PORT, http.RedirectHandler("https://"+*domain+TLSPORT, http.StatusFound))
 		if err != nil {
 			panic("Error: " + err.Error())
 		}
