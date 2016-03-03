@@ -126,9 +126,12 @@ footer {
 
 .error-msg{
     position: fixed;
+    left: 0;
+    right: 0;
     top: 25%;
-    left: 50%;
-    margin-left: -250px;
-    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    width:80%;
+    max-width:400px;
     z-index: 9999;
 }
