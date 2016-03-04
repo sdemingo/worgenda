@@ -15,13 +15,12 @@ var noteTitleReg = regexp.MustCompile("(?m)^(\\*{1,3} .+\\n)")
 var separator = "@@@@\n"
 var separatorReg = regexp.MustCompile("(?m)^@@@@\\n")
 
-//var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?\\>")
-
 var stampReg = regexp.MustCompile("\\<[^\\>]+\\>")
 var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}\\>")
 var hourDateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3} \\d{2}:\\d{2}\\>")
 var repetitionReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?( [\\+\\-]?\\d+[a-z])+\\>")
 var anniversaryReg = regexp.MustCompile("\\%\\%\\(diary-anniversary \\d{1,2} \\d{1,2} \\d{4}\\)(.*)")
+var deadlineReg = regexp.MustCompile("(?s)DEADLINE:.+:END:")
 
 var yearMonthDayReg = regexp.MustCompile("\\d{4}-\\d{2}-\\d{2}")
 var monthDayAnniversaryReg = regexp.MustCompile("\\d{1,2} \\d{1,2} \\d{4}")
@@ -46,12 +45,16 @@ func Parse(content string) []Note {
 	return notes
 }
 
+// Clean the title of the note
 func parseTitle(orgnote string) string {
 	title := noteTitleReg.FindString(orgnote)
 	prefix := regexp.MustCompile("(?m)^\\*+( TODO| DONE)?( \\[#(A|B|C)\\])?")
 	return strings.Trim(prefix.ReplaceAllString(title, ""), " \n\t")
 }
 
+// Extract and clean the body note. If the body content a
+// %%(diary-anniversary d m year) function it calculates the
+// difference and print the number in the body
 func parseBody(orgnote string) string {
 
 	body := orgnote
@@ -62,23 +65,32 @@ func parseBody(orgnote string) string {
 			return body
 		}
 		ymd := fmt.Sprintf("%s-%02s-%02s", mdy[2], mdy[0], mdy[1])
+		ymd2 := fmt.Sprintf("%d-%02s-%02s", time.Now().Year(), mdy[0], mdy[1])
 		t, err := time.Parse("2006-01-02", ymd)
+		t2, err := time.Parse("2006-01-02", ymd2)
 		if err != nil {
 			return body
 		}
 
 		body = anniversaryReg.ReplaceAllString(orgnote, "$1")
-		y := int(time.Since(t).Hours() / 8760)
-		body = strings.Replace(body, "%d", fmt.Sprintf("%d", y), 1)
+		diffYears := int(t2.Sub(t).Hours() / 8760)
+		body = strings.Replace(body, "%d", fmt.Sprintf("%d", diffYears), 1)
 		body = fmt.Sprintf("%s\n", body)
 	}
 
+	body = deadlineReg.ReplaceAllString(body, "")
 	body = noteTitleReg.ReplaceAllString(body, "")
 	body = dateReg.ReplaceAllString(body, "")
 	body = hourDateReg.ReplaceAllString(body, "")
 
 	return strings.Trim(body, " \n\t")
 }
+
+// Extract the stamps of the note in several formats: <day-month-year>,
+// <day-month-year weekday hour:min> and <day-month-year weekday hour:min repetition>.
+// If the stamp has not hour is dangerous for
+// datesInSameDay() function that we save it as 00:00. For that reason we
+// add a second after the midnight
 
 func parseStamps(orgnote string) []time.Time {
 
@@ -90,6 +102,7 @@ func parseStamps(orgnote string) []time.Time {
 		if dateReg.MatchString(rt) {
 			ymd := yearMonthDayReg.FindString(rt)
 			t, err := time.Parse("2006-01-02", ymd)
+			t = t.Add(time.Second)
 			if err == nil {
 				times = append(times, t)
 			}
@@ -99,7 +112,14 @@ func parseStamps(orgnote string) []time.Time {
 		if hourDateReg.MatchString(rt) || repetitionReg.MatchString(rt) {
 			ymd := yearMonthDayReg.FindString(rt)
 			hm := hourMinReg.FindString(rt)
-			t, err := time.Parse("2006-01-02 15:04", ymd+" "+hm)
+			var t time.Time
+			var err error
+			if hm != "" {
+				t, err = time.Parse("2006-01-02 15:04", ymd+" "+hm)
+			} else {
+				t, err = time.Parse("2006-01-02", ymd)
+				t = t.Add(time.Second)
+			}
 			if err == nil {
 				times = append(times, t)
 			}
@@ -118,6 +138,7 @@ func parseStamps(orgnote string) []time.Time {
 		year := time.Now().Year()
 		ymd := fmt.Sprintf("%d-%02s-%02s", year, mdy[0], mdy[1])
 		t, err := time.Parse("2006-01-02", ymd)
+		t = t.Add(time.Second)
 		if err == nil {
 			times = append(times, t)
 		}
@@ -125,37 +146,6 @@ func parseStamps(orgnote string) []time.Time {
 
 	return times
 }
-
-/*
-func parseStamps(orgnote string) []time.Time {
-
-	times := make([]time.Time, 0)
-	rawTimes := dateReg.FindAllString(orgnote, -1)
-
-	for _, rt := range rawTimes {
-		r := regexp.MustCompile(" [a-záéíóú]{3}")
-		rt = r.ReplaceAllString(rt, "")
-		var t time.Time
-		var err error
-		if strings.Contains(rt, ":") {
-			t, err = time.Parse("<2006-01-02 15:04>", rt)
-		} else {
-			// If the stamp has not hour is dangerous for
-			// datesInSameDay() function that we save it
-			// as 00:00. For that reason we add a second after
-			// the midnight
-
-			t, err = time.Parse("<2006-01-02>", rt)
-			t = t.Add(time.Second)
-		}
-		if err == nil {
-			times = append(times, t)
-		}
-	}
-
-	return times
-}
-*/
 
 /*
  HTML conversion
