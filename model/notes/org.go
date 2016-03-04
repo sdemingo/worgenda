@@ -1,6 +1,7 @@
 package notes
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,7 +14,18 @@ import (
 var noteTitleReg = regexp.MustCompile("(?m)^(\\*{1,3} .+\\n)")
 var separator = "@@@@\n"
 var separatorReg = regexp.MustCompile("(?m)^@@@@\\n")
-var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?\\>")
+
+//var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?\\>")
+
+var stampReg = regexp.MustCompile("\\<[^\\>]+\\>")
+var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}\\>")
+var hourDateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3} \\d{2}:\\d{2}\\>")
+var repetitionReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?( [\\+\\-]?\\d+[a-z])+\\>")
+var anniversaryReg = regexp.MustCompile("\\%\\%\\(diary-anniversary \\d{1,2} \\d{1,2} \\d{4}\\)(.*)")
+
+var yearMonthDayReg = regexp.MustCompile("\\d{4}-\\d{2}-\\d{2}")
+var monthDayAnniversaryReg = regexp.MustCompile("\\d{1,2} \\d{1,2} \\d{4}")
+var hourMinReg = regexp.MustCompile("\\d{2}:\\d{2}")
 
 // Parse string content in org mode and recover notes from it
 func Parse(content string) []Note {
@@ -36,16 +48,85 @@ func Parse(content string) []Note {
 
 func parseTitle(orgnote string) string {
 	title := noteTitleReg.FindString(orgnote)
-	prefix := regexp.MustCompile("(?m)^\\*+")
+	prefix := regexp.MustCompile("(?m)^\\*+( TODO| DONE)?( \\[#(A|B|C)\\])?")
 	return strings.Trim(prefix.ReplaceAllString(title, ""), " \n\t")
 }
 
 func parseBody(orgnote string) string {
-	body := noteTitleReg.ReplaceAllString(orgnote, "")
+
+	body := orgnote
+
+	if anniversaryReg.MatchString(body) {
+		mdy := strings.Fields(monthDayAnniversaryReg.FindString(body))
+		if len(mdy) < 3 {
+			return body
+		}
+		ymd := fmt.Sprintf("%s-%02s-%02s", mdy[2], mdy[0], mdy[1])
+		t, err := time.Parse("2006-01-02", ymd)
+		if err != nil {
+			return body
+		}
+
+		body = anniversaryReg.ReplaceAllString(orgnote, "$1")
+		y := int(time.Since(t).Hours() / 8760)
+		body = strings.Replace(body, "%d", fmt.Sprintf("%d", y), 1)
+		body = fmt.Sprintf("%s\n", body)
+	}
+
+	body = noteTitleReg.ReplaceAllString(body, "")
 	body = dateReg.ReplaceAllString(body, "")
+	body = hourDateReg.ReplaceAllString(body, "")
+
 	return strings.Trim(body, " \n\t")
 }
 
+func parseStamps(orgnote string) []time.Time {
+
+	times := make([]time.Time, 0)
+
+	// extract normal stamp with hour or not or with period
+	rawTimes := stampReg.FindAllString(orgnote, -1)
+	for _, rt := range rawTimes {
+		if dateReg.MatchString(rt) {
+			ymd := yearMonthDayReg.FindString(rt)
+			t, err := time.Parse("2006-01-02", ymd)
+			if err == nil {
+				times = append(times, t)
+			}
+			continue
+		}
+
+		if hourDateReg.MatchString(rt) || repetitionReg.MatchString(rt) {
+			ymd := yearMonthDayReg.FindString(rt)
+			hm := hourMinReg.FindString(rt)
+			t, err := time.Parse("2006-01-02 15:04", ymd+" "+hm)
+			if err == nil {
+				times = append(times, t)
+			}
+			continue
+		}
+
+	}
+
+	// extract anniversary dates format
+	rawTimes = anniversaryReg.FindAllString(orgnote, -1)
+	for _, rt := range rawTimes {
+		mdy := strings.Fields(monthDayAnniversaryReg.FindString(rt))
+		if len(mdy) < 3 {
+			continue
+		}
+		year := time.Now().Year()
+		ymd := fmt.Sprintf("%d-%02s-%02s", year, mdy[0], mdy[1])
+		t, err := time.Parse("2006-01-02", ymd)
+		if err == nil {
+			times = append(times, t)
+		}
+	}
+
+	return times
+}
+
+/*
 func parseStamps(orgnote string) []time.Time {
 
 	times := make([]time.Time, 0)
@@ -74,6 +155,7 @@ func parseStamps(orgnote string) []time.Time {
 
 	return times
 }
+*/
 
 /*
  HTML conversion
