@@ -28,6 +28,11 @@ body {
     color: #FFF;
 }
 
+.ui-widget-content .ui-datepicker-today a{
+    background: #920A0A;
+    color: #FFF;
+}
+
 #event h3{
     max-width:80%;
 }
