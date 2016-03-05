@@ -4,11 +4,11 @@
 If you have some [org-mode](http://orgmode.org/) files shared on Dropbox or other
 similar service, you must understand my frustration when you try to view or edit
 your diary scheduling in differents devices (smartphone, tablet, office
-computer, etc.). There are differents solutions well-known in the community as
+computer, etc.) without Emacs. There are differents solutions well-known in the community as
 org-mobile or orgzly but both are mobile oriented and its usability is a little
 "tricky" 
 
-Worgmode is a toy just for fun and improve my Go skills that I've built. It just
+Worgmode is a pet project just for improve my Go skills. It just
 covers a little subset of the orgmode features but by now is enough for me:
 
 * [x] Show a calendar with the events notes.
