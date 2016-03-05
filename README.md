@@ -55,9 +55,9 @@ with some important files:
 "AppSecret":"<appsecret>",
 "Token":"<apptoken>",
 "Files":[
-    "tech/emacs-all/emacs.d/org-agenda/ies.org",
-    "tech/emacs-all/emacs.d/org-agenda/casa.org",
-    "tech/emacs-all/emacs.d/org-agenda/recordatorios.org"]
+    "org/work.org",
+    "org/home.org",
+    "org/others.org"]
 }
 ```
 
