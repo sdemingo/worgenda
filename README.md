@@ -17,7 +17,7 @@ covers a little subset of the orgmode features but by now is enough for me:
 * [ ] Show TODOs task list
 
 
-## Dependencies
+## Compile
 
 If you want to compile Worgenda you need install the
 [Dropbox client for Go](https://github.com/stacktic/dropbox)
