@@ -1,6 +1,7 @@
 package notes
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -27,6 +28,7 @@ type Note struct {
 func NewNote() *Note {
 	n := new(Note)
 	n.Id = rand.Int63()
+	n.Stamps = make([]time.Time, 0)
 	return n
 }
 
@@ -73,6 +75,15 @@ func (n *Note) GetStampForDay(date time.Time) time.Time {
 		}
 	}
 	return time.Date(1982, time.August, 20, 20, 45, 0, 0, time.UTC)
+}
+
+func (n *Note) String() string {
+	s := fmt.Sprintf("* %s\n", n.Title)
+	for i := range n.Stamps {
+		s += fmt.Sprintf("\t%s\n", n.Stamps[i].Format(ORGDATEHOURFORMAT))
+	}
+	s += n.Body + "\n\n"
+	return s
 }
 
 // DayNotes sort a group of notes for a particular day

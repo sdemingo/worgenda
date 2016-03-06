@@ -6,15 +6,30 @@ $(document).ready(function(){
 	align:"right"
     });
 
-    date=$("#Stamp").val()
+    date=$("#StringDate").val()
     date=localStringDate(date)
-    $("#Stamp").val(date)
+    $("#StringDate").val(date)
 
 
     $("#send-note").click(function(e){
 	e.preventDefault()
-	showError("Esta característica aún no ha sido implementada")
+	var event = $("#new-note").serializeObject()
+	$.ajax({
+    	    url:"/notes/add",
+    	    type: "post",
+	    dataType:"json",
+	    data: JSON.stringify(event),
+    	    success: function (html){
+		window.location.href="/"
+	    },
+    	    error: function(error){
+		showError("Hubo problemas. La nota puede no haberse guardado")
+	    }
+	})    	
     })
 
-    
+    $("#cancel-send-note").click(function(e){
+	e.preventDefault()
+	window.location.href="/"
+    })
 })

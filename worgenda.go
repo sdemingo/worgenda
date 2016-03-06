@@ -34,11 +34,12 @@ func main() {
 
 	app.Run(dir)
 
-	http.HandleFunc("/welcome", notes.Main)
+	http.HandleFunc("/notes/main", notes.Main)
 	http.HandleFunc("/notes/dates", notes.GetMarkDates)
 	http.HandleFunc("/notes/events", notes.GetEvents)
 	http.HandleFunc("/notes/event", notes.GetEvent)
 	http.HandleFunc("/notes/new", notes.NewEventForm)
+	http.HandleFunc("/notes/add", notes.AddEvent)
 	http.HandleFunc("/notes/notebooks", notes.GetNotebooks)
 
 	fs := http.FileServer(http.Dir(dir + "/static"))

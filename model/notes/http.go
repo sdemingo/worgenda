@@ -40,8 +40,9 @@ func NewEventForm(w http.ResponseWriter, r *http.Request) {
 	date, err := time.Parse(DATEFORMATGETPARAM, r.FormValue("date"))
 	if err == nil {
 		contents = map[string]interface{}{
-			"StringDate": date.Format(DATEFORMATFORHTML),
-			"Date":       date,
+			"StringDate":       date.Format(DATEFORMATFORHTML),
+			"SimpleStringDate": date.Format(DATEFORMATGETPARAM),
+			"Date":             date,
 		}
 	}
 
@@ -51,6 +52,53 @@ func NewEventForm(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%v", err)
 		return
 	}
+}
+
+func AddEvent(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("X-Requested-With") != "XMLHttpRequest" {
+		http.NotFound(w, r)
+		return
+	}
+
+	_, err := app.GetSession(r)
+	if err != nil {
+		app.Exit(w, r)
+		return
+	}
+
+	newNote := struct {
+		Title string
+		Date  string
+		Hour  string
+		Body  string
+	}{"", "", "", ""}
+
+	decoder := json.NewDecoder(r.Body)
+	err = decoder.Decode(&newNote)
+	if err != nil {
+		log.Printf("notes: addevent: %v", err)
+		return
+	}
+
+	note := NewNote()
+	note.Title = newNote.Title
+	note.Source = "worgenda.org"
+	note.Body = newNote.Body
+	stamp, err := time.Parse(DATEFORMATGETPARAM+" "+HOURFORMATPRINT, newNote.Date+" "+newNote.Hour)
+	if err == nil {
+		note.Stamps = append(note.Stamps, stamp)
+	}
+
+	fmt.Println(note)
+
+	// Write json
+	w.Header().Set("Content-Type", "application/json")
+	jbody, err := json.Marshal(newNote)
+	if err != nil {
+		log.Printf("notes: getmarkdates: %v", err)
+		return
+	}
+	fmt.Fprintf(w, "%s", string(jbody[:len(jbody)]))
 }
 
 func GetEvents(w http.ResponseWriter, r *http.Request) {

@@ -98,5 +98,5 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func welcome(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/welcome", http.StatusFound)
+	http.Redirect(w, r, "/notes/main", http.StatusFound)
 }

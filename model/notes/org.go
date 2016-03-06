@@ -11,6 +11,10 @@ import (
 // These functions parser a plain text content formatted with org-mode
 // and return Notes
 
+const (
+	ORGDATEHOURFORMAT = "<2006-01-02 Mon 15:04>"
+)
+
 var noteTitleReg = regexp.MustCompile("(?m)^(\\*{1,3} .+\\n)")
 var separator = "@@@@\n"
 var separatorReg = regexp.MustCompile("(?m)^@@@@\\n")
