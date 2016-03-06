@@ -8,7 +8,7 @@ computer, etc.) without Emacs. There are differents solutions well-known in the 
 org-mobile or orgzly but both are mobile oriented and its usability is a little
 "tricky" 
 
-Worgmode is a pet project just for improve my Go skills. It just
+Worgenda is a pet project just for improve my Go skills. It just
 covers a little subset of the orgmode features but by now is enough for me:
 
 * [x] Show a calendar with the events notes.
@@ -17,7 +17,7 @@ covers a little subset of the orgmode features but by now is enough for me:
 * [ ] Show TODOs task list
 
 
-## Dependencies
+## Compile
 
 If you want to compile Worgenda you need install the
 [Dropbox client for Go](https://github.com/stacktic/dropbox)
