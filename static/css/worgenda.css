@@ -52,6 +52,14 @@ textarea{
     resize: none;
 }
 
+.form-group, .btn-group, .input-group{
+    margin: 3px 0 3px 0;
+}
+
+.checkbox-inline{
+    padding-top:0.5em;
+}
+
 
 /* How to remove Firefox's dotted outline on buttons */
 a:focus, a:active, 

@@ -6,9 +6,9 @@ $(document).ready(function(){
 	align:"right"
     });
 
-    date=$("#StringDate").val()
+    date=$("#StringDate").html()
     date=localStringDate(date)
-    $("#StringDate").val(date)
+    $("#StringDate").html(date)
 
 
     $("#send-note").click(function(e){
@@ -31,5 +31,17 @@ $(document).ready(function(){
     $("#cancel-send-note").click(function(e){
 	e.preventDefault()
 	window.location.href="/"
+    })
+
+    $("#AllDay").click(function(e){
+    	if ($(this).prop("checked")){
+    	    $("#Hour").prop("disabled",true)
+	    $("#Hour").val("00:00")
+	    $(".clockpicker").addClass("no-events")
+    	}else{
+    	    $("#Hour").prop("disabled",false)
+	    $("#Hour").val("09:00")
+	    $(".clockpicker").removeClass("no-events")
+    	}
     })
 })
