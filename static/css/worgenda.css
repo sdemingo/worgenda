@@ -64,6 +64,13 @@ textarea{
     resize: none;
 }
 
+.ellipses{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+}
+
 .form-group, .btn-group, .input-group{
     margin: 3px 0 3px 0;
 }
