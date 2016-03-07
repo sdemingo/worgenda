@@ -35,11 +35,11 @@ $(document).ready(function(){
 
     $("#AllDay").click(function(e){
     	if ($(this).prop("checked")){
-    	    $("#Hour").prop("disabled",true)
+    	    $("#Hour").prop("readonly",true)
 	    $("#Hour").val("00:00")
 	    $(".clockpicker").addClass("no-events")
     	}else{
-    	    $("#Hour").prop("disabled",false)
+    	    $("#Hour").prop("readonly",false)
 	    $("#Hour").val("09:00")
 	    $(".clockpicker").removeClass("no-events")
     	}
