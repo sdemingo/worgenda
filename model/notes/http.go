@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
+	"strings"
 	"text/template"
 	"time"
 
@@ -83,13 +84,14 @@ func AddEvent(w http.ResponseWriter, r *http.Request) {
 	note := NewNote()
 	note.Title = newNote.Title
 	note.Source = "worgenda.org"
-	note.Body = newNote.Body
+	note.Body = strings.Replace(newNote.Body, "\r\n", "\n", -1)
 	stamp, err := time.Parse(DATEFORMATGETPARAM+" "+HOURFORMATPRINT, newNote.Date+" "+newNote.Hour)
 	if err == nil {
 		note.Stamps = append(note.Stamps, stamp)
 	}
 
-	fmt.Println(note)
+	AllNotes.AddNote(*note)
+	Upload()
 
 	// Write json
 	w.Header().Set("Content-Type", "application/json")

@@ -39,16 +39,6 @@ func (a *Agenda) GetNote(id int64) *Note {
 	return nil
 }
 
-/*
-func (a *Agenda) Build(notes []Note) error {
-	a.rMutex.RLock()
-	defer a.rMutex.RUnlock()
-
-	a.Notes = notes
-	a.lastSync = time.Now()
-	return nil
-}
-*/
 func (a *Agenda) AddNotebook(name string, content string) error {
 	a.rMutex.RLock()
 	defer a.rMutex.RUnlock()
@@ -64,6 +54,21 @@ func (a *Agenda) AddNotebook(name string, content string) error {
 	a.lastSync = time.Now()
 
 	return nil
+}
+
+func (a *Agenda) AddNote(n Note) {
+	a.rMutex.RLock()
+	defer a.rMutex.RUnlock()
+
+	if !n.IsValid() {
+		return
+	}
+
+	if _, ok := a.Notes[n.Source]; !ok {
+		a.Notes[n.Source] = make([]Note, 0)
+	}
+
+	a.Notes[n.Source] = append(a.Notes[n.Source], n)
 }
 
 func (a *Agenda) GetNotebooks() map[string]string {
@@ -86,6 +91,17 @@ func (a *Agenda) GetNotesFromDate(daynotes *DayNotes) {
 			daynotes.Add(notes[i])
 		}
 	}
+}
+
+func (a *Agenda) GetNotesFromNotebook(notebook string) []Note {
+	a.rMutex.Lock()
+	defer a.rMutex.Unlock()
+
+	if _, ok := a.Notes[notebook]; !ok {
+		return nil
+	}
+
+	return a.Notes[notebook]
 }
 
 func (a *Agenda) GetBusyDates() []string {

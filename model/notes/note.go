@@ -32,6 +32,10 @@ func NewNote() *Note {
 	return n
 }
 
+func (n *Note) IsValid() bool {
+	return len(strings.TrimSpace(n.Title)) > 0
+}
+
 func (n *Note) GetResumeBody() string {
 	words := strings.Fields(n.Body)
 	if len(words) < MAXWORDSRESUMEBODY {
@@ -82,7 +86,7 @@ func (n *Note) String() string {
 	for i := range n.Stamps {
 		s += fmt.Sprintf("\t%s\n", n.Stamps[i].Format(ORGDATEHOURFORMAT))
 	}
-	s += n.Body + "\n\n"
+	s += n.Body + "\n"
 	return s
 }
 
