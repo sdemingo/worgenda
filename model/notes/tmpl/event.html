@@ -13,9 +13,9 @@
     {{end}}
   </div>
   <div class="panel-body ellipses">
-    <p class="list-group-item-text"><strong>{{.Event.Title}}</strong></p>
-    <p class="list-group-item-text"><small>Creado en {{.Event.Source}}</small></p>
+    <p><span class="label label-primary event-tag">{{.Event.Source}}</span></p>
+    <p><strong>{{.Event.Title}}</strong></p>
     <p></p>
-    <p class="list-group-item-text">{{.Event.GetHTMLBody}}</p>
+    <p>{{.Event.GetHTMLBody}}</p>
   </div>
 </div>

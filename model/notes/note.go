@@ -41,7 +41,8 @@ func (n *Note) GetResumeBody() string {
 	if len(words) < MAXWORDSRESUMEBODY {
 		return strings.Join(words, " ")
 	} else {
-		return strings.Join(words[:MAXWORDSRESUMEBODY], " ") + " ..."
+		//return strings.Join(words[:MAXWORDSRESUMEBODY], " ") + " ..."
+		return ""
 	}
 }
 

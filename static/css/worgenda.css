@@ -3,11 +3,19 @@ html {
     overflow-y: scroll;
 }
 
-
 body {
     padding-top: 80px;
 }
 
+.row{
+    margin:0 auto;
+}
+
+
+
+
+
+/*    Datepicker    */
 
 #datepicker{
     height:100%;
@@ -15,25 +23,17 @@ body {
     margin-bottom:20px;
 }
 
-
-@media (max-width:400px){
-    #datepicker{
-	font-size: 1.2em;
-    }
-}
-
-@media (max-width:1000px){
-    #datepicker{
-	font-size: 1.1em;
-    }
-}
-
-@media (max-width:1100px){
+@media (max-width:360px){
     #datepicker{
 	font-size: 1em;
     }
 }
 
+@media (min-width:360px) and (max-width:800px){
+    #datepicker{
+	font-size: 1.15em;
+    }
+}
 
 .dp-marked-date .ui-state-default {
     background: #4682B4;
@@ -45,11 +45,15 @@ body {
     color: #FFF;
 }
 
+
+
+/*   Forms   */
+
 #event h3{
     max-width:80%;
 }
 
-#day-events .event-hour{
+.event-hour, .event-tag{
     display:inline-block;
     margin:5px 3px 5px 3px;
 }
@@ -80,6 +84,25 @@ textarea{
 }
 
 
+.no-events{
+	pointer-events: none;
+}
+
+.error-msg{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 25%;
+    margin-left: auto;
+    margin-right: auto;
+    width:80%;
+    max-width:400px;
+    z-index: 9999;
+}
+
+
+
+
 /* How to remove Firefox's dotted outline on buttons */
 a:focus, a:active, 
 button::-moz-focus-inner,
@@ -93,8 +116,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 
 
 
-/* Sticky footer styles
-   -------------------------------------------------- */
+/* Sticky footer styles */
 html {
     position: relative;
     min-height: 100%;
@@ -117,7 +139,7 @@ footer {
 
 
 
-/*Hide CSS*/
+/*  Custom tabs for notebooks views   */
 #tabs { 
     padding: 0px; 
     background: none; 
@@ -138,7 +160,7 @@ footer {
     padding:5px;
 }
 
-
+/*
 .smaller-screen-sep{
     display:none;
 }
@@ -149,21 +171,6 @@ footer {
         min-height:10px;
     }
 }
+*/
 
 
-.no-events{
-	pointer-events: none;
-}
-
-
-.error-msg{
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 25%;
-    margin-left: auto;
-    margin-right: auto;
-    width:80%;
-    max-width:400px;
-    z-index: 9999;
-}
