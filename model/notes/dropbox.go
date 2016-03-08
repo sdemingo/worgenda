@@ -57,6 +57,14 @@ func readSources(config *DropboxConfig) {
 
 		AllNotes.AddNotebook(filepath.Base(file), fcontent)
 	}
+
+	fcontent, err := ReadFile(config, config.Notebook)
+	if err != nil {
+		log.Printf("notes: readsources: %v", err)
+		return
+	}
+
+	AllNotes.AddNotebook(filepath.Base(config.Notebook), fcontent)
 }
 
 func writeSources(config *DropboxConfig) {
