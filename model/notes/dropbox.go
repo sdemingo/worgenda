@@ -23,6 +23,7 @@ type DropboxConfig struct {
 	AppSecret string
 	Token     string
 	Files     []string
+	Notebook  string
 }
 
 func Sync() {
@@ -59,7 +60,7 @@ func readSources(config *DropboxConfig) {
 }
 
 func writeSources(config *DropboxConfig) {
-	notesToWrite := AllNotes.GetNotesFromNotebook("worgenda.org")
+	notesToWrite := AllNotes.GetNotesFromNotebook(filepath.Base(config.Notebook))
 	content := "#+TITLE: Worgenda Notebook\n\n"
 	for _, note := range notesToWrite {
 		if note.IsValid() {
@@ -67,17 +68,7 @@ func writeSources(config *DropboxConfig) {
 		}
 	}
 
-	file := ""
-	for _, file = range config.Files {
-		if filepath.Base(file) == "worgenda.org" {
-			break
-		}
-	}
-	if file == "" {
-		log.Printf("notes: writesource: no worgenda notebook found")
-	}
-
-	err := WriteFile(config, file, content)
+	err := WriteFile(config, config.Notebook, content)
 	if err != nil {
 		log.Printf("notes: writesources: %v", err)
 	}

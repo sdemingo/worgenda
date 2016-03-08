@@ -91,7 +91,7 @@ func AddEvent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	AllNotes.AddNote(*note)
-	Upload()
+	go Upload()
 
 	// Write json
 	w.Header().Set("Content-Type", "application/json")
