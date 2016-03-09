@@ -39,6 +39,8 @@ func Parse(content string) []Note {
 
 	for _, rnote := range rawNotes {
 		note := NewNote()
+		note.Status = parseStatus(rnote)
+		//fmt.Println(note.Status)
 		note.Title = parseTitle(rnote)
 		note.Body = parseBody(rnote)
 		note.Stamps = parseStamps(rnote)
@@ -47,6 +49,12 @@ func Parse(content string) []Note {
 	}
 
 	return notes
+}
+
+func parseStatus(orgnote string) string {
+	title := noteTitleReg.FindString(orgnote)
+	prefix := regexp.MustCompile(" TODO|DONE ")
+	return strings.TrimSpace(prefix.FindString(title))
 }
 
 // Clean the title of the note

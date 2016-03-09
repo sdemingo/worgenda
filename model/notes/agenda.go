@@ -104,6 +104,23 @@ func (a *Agenda) GetNotesFromNotebook(notebook string) []Note {
 	return a.Notes[notebook]
 }
 
+func (a *Agenda) GetNotesToDo() []Note {
+	a.rMutex.Lock()
+	defer a.rMutex.Unlock()
+
+	todo := make([]Note, 0)
+
+	for _, notes := range a.Notes {
+		for _, note := range notes {
+			if note.IsTodo() {
+				todo = append(todo, note)
+			}
+		}
+	}
+
+	return todo
+}
+
 func (a *Agenda) GetBusyDates() []string {
 	a.rMutex.Lock()
 	defer a.rMutex.Unlock()

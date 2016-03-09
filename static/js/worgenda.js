@@ -25,6 +25,7 @@ $(document).ready(function(){
     getMarkDates()
     var today=$.datepicker.formatDate(W.datepickerFormatLayout, new Date()) 
     getEventsForADate(today)
+    getTodoTasks()
 
     storeSession()
 })
@@ -49,6 +50,19 @@ function getMarkDates(){
 	    window.location.href="/"
 	}
     })
+}
+
+function getTodoTasks(){
+    $.ajax({
+    	url:"/notes/todo",
+    	type: 'get',
+    	success: function (html){
+	    $("#tasks").html(html)
+	},
+    	error: function(error){
+	    window.location.href="/"
+	}
+    })   
 }
 
 function getEventsForADate(sdate){

@@ -23,17 +23,23 @@ type Note struct {
 	Body   string
 	Stamps []time.Time
 	Source string
+	Status string
 }
 
 func NewNote() *Note {
 	n := new(Note)
 	n.Id = rand.Int63()
 	n.Stamps = make([]time.Time, 0)
+	n.Status = ""
 	return n
 }
 
 func (n *Note) IsValid() bool {
 	return len(strings.TrimSpace(n.Title)) > 0
+}
+
+func (n *Note) IsTodo() bool {
+	return n.Status == "TODO"
 }
 
 func (n *Note) GetResumeBody() string {

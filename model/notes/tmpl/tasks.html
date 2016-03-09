@@ -1,0 +1,19 @@
+<div id="tasks-todo" class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Tareas pendientes</h3>
+  </div>
+  <div class="panel-body">
+   {{ if not . }}
+    <p>No hay nada pendiente</p>
+    {{else}}
+    <div class="list-group">
+     {{range .}}
+      <a href="/notes/event?id={{.Id}}" class="list-group-item">
+	<p class="list-group-item-heading">{{.Title}}</p>
+      </a>
+   {{end}}
+    </div>
+    {{end}}
+  </div>
+
+</div>

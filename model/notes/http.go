@@ -222,3 +222,25 @@ func GetNotebooks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func GetTasks(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("X-Requested-With") != "XMLHttpRequest" {
+		http.NotFound(w, r)
+		return
+	}
+	_, err := app.GetSession(r)
+	if err != nil {
+		app.Exit(w, r)
+		return
+	}
+
+	notes := AllNotes.GetNotesToDo()
+
+	// Write template
+	tmpl := template.Must(template.ParseFiles(app.AppDir + "/model/notes/tmpl/tasks.html"))
+	if err := tmpl.Execute(w, notes); err != nil {
+		log.Printf("%v", err)
+		return
+	}
+
+}
