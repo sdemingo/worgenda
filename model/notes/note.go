@@ -17,13 +17,16 @@ const (
 	MAXWORDSRESUMEBODY = 20
 )
 
+var nullTime = time.Time{}
+
 type Note struct {
-	Id     int64
-	Title  string
-	Body   string
-	Stamps []time.Time
-	Source string
-	Status string
+	Id       int64
+	Title    string
+	Body     string
+	Stamps   []time.Time
+	Source   string
+	Status   string
+	Deadline time.Time
 }
 
 func NewNote() *Note {
@@ -31,6 +34,7 @@ func NewNote() *Note {
 	n.Id = rand.Int63()
 	n.Stamps = make([]time.Time, 0)
 	n.Status = ""
+	n.Deadline = nullTime
 	return n
 }
 
@@ -40,6 +44,10 @@ func (n *Note) IsValid() bool {
 
 func (n *Note) IsTodo() bool {
 	return n.Status == "TODO"
+}
+
+func (n *Note) HasDeadline() bool {
+	return n.Deadline != nullTime
 }
 
 func (n *Note) GetResumeBody() string {

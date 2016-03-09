@@ -40,15 +40,26 @@ func Parse(content string) []Note {
 	for _, rnote := range rawNotes {
 		note := NewNote()
 		note.Status = parseStatus(rnote)
-		//fmt.Println(note.Status)
 		note.Title = parseTitle(rnote)
 		note.Body = parseBody(rnote)
 		note.Stamps = parseStamps(rnote)
+		note.Deadline = parseDeadlines(rnote)
 
 		notes = append(notes, *note)
 	}
 
 	return notes
+}
+
+func parseDeadlines(orgnote string) time.Time {
+	// TODO:
+	// Extract the deadline stamp and the repetition and/or warnings
+
+	deadline := nullTime
+	if deadlineReg.FindString(orgnote) != "" {
+		return deadline.Add(1 * time.Minute)
+	}
+	return deadline
 }
 
 func parseStatus(orgnote string) string {

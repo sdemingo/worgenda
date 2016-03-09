@@ -112,7 +112,9 @@ func (a *Agenda) GetNotesToDo() []Note {
 
 	for _, notes := range a.Notes {
 		for _, note := range notes {
-			if note.IsTodo() {
+			// TODO:
+			// by now, it ignores all notes with a deadline
+			if note.IsTodo() && !note.HasDeadline() {
 				todo = append(todo, note)
 			}
 		}
