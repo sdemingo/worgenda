@@ -1,6 +1,7 @@
 
 html {
     overflow-y: scroll;
+    background-color:black;
 }
 
 body {
@@ -70,7 +71,7 @@ textarea{
 
 .ellipses{
     overflow: hidden;
-    white-space: nowrap;
+    white-space: wrap;
     text-overflow: ellipsis;
 
 }

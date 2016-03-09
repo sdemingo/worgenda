@@ -12,7 +12,7 @@
     <p>No hay eventos</p>
     {{else}}
     <div class="list-group">
-   {{ $date:=.Date }}
+   {{$date:=.Date}}
    {{range .Events}}
       <a href="/notes/event?id={{.Id}}" class="list-group-item">
 	{{$hour:= .GetStampHour $date}}
