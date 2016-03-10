@@ -19,7 +19,17 @@
 	{{if $hour}}
 	<span class="label label-primary event-hour pull-right">{{$hour}}</span>
 	{{end}}
+
+	{{if .HasDeadline $date}}
+	<p class="list-group-item-heading">
+	  <span class="text-danger"><span class="glyphicon glyphicon-time"></span></span>
+	  <span class="text-danger"><strong>{{.Title}}</strong></span>
+	</p>
+	{{else}}
 	<p class="list-group-item-heading">{{.Title}}</p>
+	{{end}}
+
+        
 	<p class="list-group-item-text ellipses">{{.GetResumeBody}}</p>
       </a>
    {{end}}

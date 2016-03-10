@@ -12,7 +12,8 @@ import (
 // and return Notes
 
 const (
-	ORGDATEHOURFORMAT = "<2006-01-02 Mon 15:04>"
+	ORGDATEHOURFORMAT = "2006-01-02 Mon 15:04"
+	ORGDATEFORMAT     = "2006-01-02"
 )
 
 var noteTitleReg = regexp.MustCompile("(?m)^(\\*{1,3} .+\\n)")
@@ -22,7 +23,7 @@ var separatorReg = regexp.MustCompile("(?m)^@@@@\\n")
 var stampReg = regexp.MustCompile("\\<[^\\>]+\\>")
 var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}\\>")
 var hourDateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3} \\d{2}:\\d{2}\\>")
-var repetitionReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?( [\\+\\-]?\\d+[a-z])+\\>")
+var repetitionReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?( [\\+\\-]+\\d+[a-z])+\\>")
 var anniversaryReg = regexp.MustCompile("\\%\\%\\(diary-anniversary \\d{1,2} \\d{1,2} \\d{4}\\)(.*)")
 var deadlineReg = regexp.MustCompile("(?s)DEADLINE:.+:END:")
 
@@ -57,7 +58,9 @@ func parseDeadlines(orgnote string) time.Time {
 
 	deadline := nullTime
 	if deadlineReg.FindString(orgnote) != "" {
-		return deadline.Add(1 * time.Minute)
+		dl := yearMonthDayReg.FindAllString(orgnote, 1)
+		deadline, _ = time.Parse(ORGDATEFORMAT, dl[0])
+		return deadline
 	}
 	return deadline
 }

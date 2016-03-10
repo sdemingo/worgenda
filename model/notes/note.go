@@ -46,8 +46,11 @@ func (n *Note) IsTodo() bool {
 	return n.Status == "TODO"
 }
 
-func (n *Note) HasDeadline() bool {
-	return n.Deadline != nullTime
+func (n *Note) HasDeadline(date time.Time) bool {
+	if n.Deadline == nullTime {
+		return false
+	}
+	return n.Deadline == date
 }
 
 func (n *Note) GetResumeBody() string {
@@ -55,7 +58,6 @@ func (n *Note) GetResumeBody() string {
 	if len(words) < MAXWORDSRESUMEBODY {
 		return strings.Join(words, " ")
 	} else {
-		//return strings.Join(words[:MAXWORDSRESUMEBODY], " ") + " ..."
 		return ""
 	}
 }
@@ -97,9 +99,9 @@ func (n *Note) GetStampForDay(date time.Time) time.Time {
 }
 
 func (n *Note) String() string {
-	s := fmt.Sprintf("* %s\n", n.Title)
+	s := fmt.Sprintf("\n* %s\n", n.Title)
 	for i := range n.Stamps {
-		s += fmt.Sprintf("\t%s\n", n.Stamps[i].Format(ORGDATEHOURFORMAT))
+		s += fmt.Sprintf("\t<%s>\n", n.Stamps[i].Format(ORGDATEHOURFORMAT))
 	}
 	s += n.Body + "\n"
 	return s
