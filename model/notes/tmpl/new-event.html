@@ -94,17 +94,29 @@
 
 	<div class="form-group">
 	  <div class="col-xs-12 col-md-4 btn-group" role="group">
-	    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-bold" aria-hidden="true"></span></button>
-	    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-italic" aria-hidden="true"></span></button>
-	    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span></button>
-	    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link" aria-hidden="true"></span></button>
-	    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></button>
-	    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-console" aria-hidden="true"></span></span>
+	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Negrita">
+	      <span class="glyphicon glyphicon-bold" aria-hidden="true"></span>
 	    </button>
-	  </div>
-
-	  <div class="col-xs-12 col-md-5 btn-group" >
-	    <a href="#" id="load-draft">Cargar último borrador</a>
+	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Cursiva">
+	      <span class="glyphicon glyphicon-italic" aria-hidden="true"></span>
+	    </button>
+	    <span class="btn-separator"></span>
+	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Imagen">
+	      <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+	    </button>
+	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Enlace">
+	      <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+	    </button>
+	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Lista">
+	      <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+	    </button>
+	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Bloque de código">
+	      <span class="glyphicon glyphicon-console" aria-hidden="true"></span></span>
+	    </button>
+	    <span class="btn-separator"></span>
+	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Cargar borrador">
+	      <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></span>
+	    </button>
 	  </div>
 	</div>
 	
@@ -125,13 +137,5 @@
         <p class="text-muted">Worgenda beta version</p>
       </div>
     </footer>
-
-
-    <!--  
-    <script type="text/javascript">
-    $('.clockpicker').clockpicker({
-    donetext: 'Done',
-    });
-    </script>-->
   </body>
 </html>

@@ -1,7 +1,6 @@
 
 html {
     overflow-y: scroll;
-    background-color:black;
 }
 
 body {
@@ -80,13 +79,23 @@ textarea{
     margin: 3px 0 3px 0;
 }
 
+.btn-separator{
+    content: ' ';
+    display: block;
+    float: left;
+    /*background: #ADADAD;*/
+    margin: 0 5px;
+    height: 34px;
+    width: 1px;
+}
+
 .checkbox-inline{
     padding-top:0.5em;
 }
 
 
 .no-events{
-	pointer-events: none;
+    pointer-events: none;
 }
 
 .error-msg{
@@ -160,18 +169,3 @@ footer {
     border-width: 0px 1px 1px 1px; 
     padding:5px;
 }
-
-/*
-.smaller-screen-sep{
-    display:none;
-}
-
-@media (max-width: 400px) {
-    .smaller-screen-sep {
-	display:block;
-        min-height:10px;
-    }
-}
-*/
-
-
