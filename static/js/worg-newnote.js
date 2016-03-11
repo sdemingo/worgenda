@@ -14,6 +14,10 @@ $(document).ready(function(){
     $("#send-note").click(function(e){
 	e.preventDefault()
 	var event = $("#new-note").serializeObject()
+	if (event.Title.trim() == ""){
+	    showError("La nota debe tener un título")
+	    return
+	}
 	$.ajax({
     	    url:"/notes/add",
     	    type: "post",
