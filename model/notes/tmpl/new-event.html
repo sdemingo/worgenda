@@ -53,28 +53,37 @@
       <form id="new-note">
 
 	<div class="form-group">
-	  <div class="col-xs-12 col-md-7">
+	  <div class="col-xs-12 col-md-12">
 	    <input type="text" class="form-control" name="Title" id="Title" placeholder="Título de la nota">
 	  </div>
-
-          {{if .StringDate}}
+         {{if .StringDate}}
 	  <input type="hidden" name="Date" id="Date" value="{{.SimpleStringDate}}" readonly>
-	  {{end}}
-
-	  <div class="col-xs-12 col-md-5">
-	    <div class="col-xs-5 col-md-6">
-         {{if .StringDate}} 
-	      <div class="checkbox-inline">
-		<input type="checkbox" name="AllDay" id="AllDay" ><label>Sin hora</label>
-	      </div>
-	 {{else}}
-	      <div class="checkbox-inline">
-		<input type="checkbox" name="AllDay" id="AllDay" checked disabled><label>Sin hora</label>
-	      </div>
 	 {{end}}
-	    </div>
+	</div>
 
-	    <div class="input-group clockpicker col-xs-7 col-md-5">
+	<div class="form-group"></div>
+
+	<div class="form-group">
+	  <div class="col-xs-12 col-sm-6 col-md-4 btn-group" role="group">
+	    <label class="checkbox-inline">
+	      <input type="checkbox" name="ToDo" id="ToDO" >Pendiente
+	    </label>
+	    <label class="checkbox-inline">
+	      <input type="checkbox" name="Deadline" id="Deadline" >Deadline
+	    </label>
+            {{if .StringDate}} 
+	    <label class="checkbox-inline">
+	      <input type="checkbox" name="AllDay" id="AllDay" >Sin hora 
+	    </label>
+	      {{else}}
+	    <label class="checkbox-inline">
+	      <input type="checkbox" name="AllDay" id="AllDay" checked disabled>Sin hora
+	    </label>
+	      {{end}}
+	  </div>
+
+	  <div class="form-group form-inline col-xs-12 col-sm-6 col-md-4" role="group">
+	    <div class="input-group clockpicker">
             {{if .StringDate}}
 	      <input type="text" class="form-control" id="Hour" name="Hour" value="09:00">
 	      <span class="input-group-addon">
@@ -88,12 +97,8 @@
             {{end}}
 	    </div>
 	  </div>
-	</div> <!-- form group (title, date, hour) -->
 
-	<div class="form-group"></div>
-
-	<div class="form-group">
-	  <div class="col-xs-12 col-md-4 btn-group" role="group">
+	  <div class="col-xs-12 col-md-9 btn-group" role="group">
 	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Negrita">
 	      <span class="glyphicon glyphicon-bold" aria-hidden="true"></span>
 	    </button>
