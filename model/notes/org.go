@@ -23,13 +23,21 @@ var separatorReg = regexp.MustCompile("(?m)^@@@@\\n")
 var stampReg = regexp.MustCompile("\\<[^\\>]+\\>")
 var dateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}\\>")
 var hourDateReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3} \\d{2}:\\d{2}\\>")
-var repetitionReg = regexp.MustCompile("\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?( [\\+\\-]+\\d+[a-z])+\\>")
+
 var anniversaryReg = regexp.MustCompile("\\%\\%\\(diary-anniversary \\d{1,2} \\d{1,2} \\d{4}\\)(.*)")
-var deadlineReg = regexp.MustCompile("(?s)DEADLINE:.+:END:")
+var deadlineReg = regexp.MustCompile("(DEADLINE:)?( )*\\<\\d{4}-\\d{2}-\\d{2} .{3}( \\d{2}:\\d{2})?( [\\+\\-]+\\d+[a-z])+\\>")
+var repetitionStatusReg = regexp.MustCompile("(.)*- State \"DONE\"(.)*from \"TODO\"(.)*")
+var propertiesGroupReg = regexp.MustCompile("(?s):PROPERTIES:(.)*:END:")
+var warningReg = regexp.MustCompile(" \\-\\d+[a-z]")
 
 var yearMonthDayReg = regexp.MustCompile("\\d{4}-\\d{2}-\\d{2}")
 var monthDayAnniversaryReg = regexp.MustCompile("\\d{1,2} \\d{1,2} \\d{4}")
 var hourMinReg = regexp.MustCompile("\\d{2}:\\d{2}")
+
+var dayDuration = time.Duration(24) * time.Hour
+var weekDuration = time.Duration(7) * dayDuration
+var monthDuration = time.Duration(4) * weekDuration
+var yearDuration = time.Duration(52) * weekDuration
 
 // Parse string content in org mode and recover notes from it
 func Parse(content string) []Note {
@@ -45,6 +53,7 @@ func Parse(content string) []Note {
 		note.Body = parseBody(rnote)
 		note.Stamps = parseStamps(rnote)
 		note.Deadline = parseDeadlines(rnote)
+		note.Warning = parseDeadlineWarning(rnote)
 
 		notes = append(notes, *note)
 	}
@@ -53,16 +62,42 @@ func Parse(content string) []Note {
 }
 
 func parseDeadlines(orgnote string) time.Time {
-	// TODO:
-	// Extract the deadline stamp and the repetition and/or warnings
-
 	deadline := nullTime
 	if deadlineReg.FindString(orgnote) != "" {
 		dl := yearMonthDayReg.FindAllString(orgnote, 1)
 		deadline, _ = time.Parse(ORGDATEFORMAT, dl[0])
+		//fmt.Println(deadline)
 		return deadline
 	}
 	return deadline
+}
+
+func parseDeadlineWarning(orgnote string) time.Duration {
+
+	if dl := deadlineReg.FindString(orgnote); dl != "" {
+		w := warningReg.FindString(dl)
+		numberReg := regexp.MustCompile("\\d+")
+		durReg := regexp.MustCompile("[a-z]")
+		numberStr := numberReg.FindString(w)
+		durStr := durReg.FindString(w)
+		number, _ := strconv.ParseInt(numberStr, 10, 64)
+
+		//fmt.Println(number, durStr)
+		switch durStr {
+		case "h":
+			return time.Duration(number) * time.Hour
+		case "d":
+			return time.Duration(number) * dayDuration
+		case "m":
+			return time.Duration(number) * monthDuration
+		case "w":
+			return time.Duration(number) * weekDuration
+		case "y":
+			return time.Duration(number) * yearDuration
+		}
+	}
+
+	return time.Duration(0)
 }
 
 func parseStatus(orgnote string) string {
@@ -105,6 +140,8 @@ func parseBody(orgnote string) string {
 	}
 
 	body = deadlineReg.ReplaceAllString(body, "")
+	body = repetitionStatusReg.ReplaceAllString(body, "")
+	body = propertiesGroupReg.ReplaceAllString(body, "")
 	body = noteTitleReg.ReplaceAllString(body, "")
 	body = dateReg.ReplaceAllString(body, "")
 	body = hourDateReg.ReplaceAllString(body, "")
@@ -135,7 +172,7 @@ func parseStamps(orgnote string) []time.Time {
 			continue
 		}
 
-		if hourDateReg.MatchString(rt) || repetitionReg.MatchString(rt) {
+		if hourDateReg.MatchString(rt) || deadlineReg.MatchString(rt) { //repetitionReg.MatchString(rt) {
 			ymd := yearMonthDayReg.FindString(rt)
 			hm := hourMinReg.FindString(rt)
 			var t time.Time

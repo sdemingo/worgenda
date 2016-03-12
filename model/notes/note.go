@@ -27,6 +27,7 @@ type Note struct {
 	Source   string
 	Status   string
 	Deadline time.Time
+	Warning  time.Duration
 }
 
 func NewNote() *Note {
@@ -35,6 +36,7 @@ func NewNote() *Note {
 	n.Stamps = make([]time.Time, 0)
 	n.Status = ""
 	n.Deadline = nullTime
+	n.Warning = time.Duration(0)
 	return n
 }
 
@@ -51,6 +53,14 @@ func (n *Note) HasDeadline(date time.Time) bool {
 		return false
 	}
 	return n.Deadline == date
+}
+
+func (n *Note) IsWarningTime() bool {
+	if n.Warning == 0 || n.Deadline == nullTime {
+		return true
+	}
+	warnTime := time.Now().Add(n.Warning)
+	return warnTime.After(n.Deadline)
 }
 
 func (n *Note) GetResumeBody() string {
@@ -86,6 +96,13 @@ func (n *Note) GetStampHour(date time.Time) string {
 		return ""
 	}
 	return stamp.Format(HOURFORMATPRINT)
+}
+
+// Return the string part with the date for the timestamp that happens
+// in this day
+func (n *Note) GetStampDate(date time.Time) string {
+	stamp := n.GetStampForDay(date)
+	return stamp.Format(DATEFORMATFORHTML)
 }
 
 // Get the stamp of the note for this day
