@@ -11,6 +11,33 @@ $(document).ready(function(){
     $("#StringDate").html(date)
 
 
+    // Forms buttons
+
+    $("#AllDay").click(function(e){
+    	if ($(this).prop("checked")){
+    	    $("#Hour").prop("readonly",true)
+	    $("#Hour").val("00:00")
+	    $(".clockpicker").addClass("no-events")
+    	}else{
+    	    $("#Hour").prop("readonly",false)
+	    $("#Hour").val("09:00")
+	    $(".clockpicker").removeClass("no-events")
+    	}
+    })
+
+    $("#ToDo").click(function(e){
+	var title = $("#Title").val().trim()
+	if ($(this).prop("checked")){
+	    if (!title.startsWith("TODO")){
+		title = "TODO "+title	
+	    }
+	}else{
+	    title = title.replace(/^TODO/,"")
+	}
+	$("#Title").val(title)
+    })
+
+
     $("#send-note").click(function(e){
 	e.preventDefault()
 	var event = $("#new-note").serializeObject()
@@ -24,6 +51,8 @@ $(document).ready(function(){
 	    dataType:"json",
 	    data: JSON.stringify(event),
     	    success: function (html){
+		$("#Title").val("")
+		$("#Body").val("")
 		window.location.href="/"
 	    },
     	    error: function(error){
@@ -34,18 +63,8 @@ $(document).ready(function(){
 
     $("#cancel-send-note").click(function(e){
 	e.preventDefault()
+	$("#Title").val("")
+	$("#Body").val("")
 	window.location.href="/"
-    })
-
-    $("#AllDay").click(function(e){
-    	if ($(this).prop("checked")){
-    	    $("#Hour").prop("readonly",true)
-	    $("#Hour").val("00:00")
-	    $(".clockpicker").addClass("no-events")
-    	}else{
-    	    $("#Hour").prop("readonly",false)
-	    $("#Hour").val("09:00")
-	    $(".clockpicker").removeClass("no-events")
-    	}
     })
 })

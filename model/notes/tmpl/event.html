@@ -13,7 +13,12 @@
     {{end}}
   </div>
   <div class="panel-body ellipses">
-    <p><span class="label label-primary event-tag">{{.Event.Source}}</span></p>
+    <p>
+      <span class="label label-primary event-tag">{{.Event.Source}}</span>
+      {{if .Event.HasDeadline .Date}}
+      <span class="label label-danger event-tag"><span class="glyphicon glyphicon-time"></span> deadline</span>
+      {{end}}
+    </p>
     <p><strong>{{.Event.Title}}</strong></p>
     <p></p>
     <p>{{.Event.GetHTMLBody}}</p>

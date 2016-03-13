@@ -9,7 +9,14 @@
     <div class="list-group">
      {{range .}}
       <div class="list-group-item">
+	{{if .HasDeadline .Deadline}}
+	<p class="list-group-item-heading">
+	  <span class="text-danger"><span class="glyphicon glyphicon-time"></span></span>
+	  <span class="text-danger"><strong>{{.Title}}</strong> <small>(termina en <span class="localdate">{{.GetStampDate .Deadline}})</span></small></span>
+	</p>
+	{{else}}
 	<p class="list-group-item-heading">{{.Title}}</p>
+	{{end}}
       </div>
    {{end}}
     </div>

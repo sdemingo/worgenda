@@ -58,7 +58,13 @@ function getTodoTasks(){
     	type: 'get',
     	success: function (html){
 	    $("#tasks").html(html)
-	},
+	    $(".localdate").each(function(i){
+		console.log("bla")
+		var title=$(this).html()
+		title=localStringDate(title)
+		$(this).html(title)
+	    })
+		},
     	error: function(error){
 	    window.location.href="/"
 	}
@@ -144,4 +150,5 @@ function localNames(){
 	title=localStringDate(title)
 	$(this).html(title)
     })
+
 	}
