@@ -28,7 +28,6 @@ body {
 	font-size: 1em;
     }
 }
-
 @media (min-width:360px) and (max-width:800px){
     #datepicker{
 	font-size: 1.15em;
@@ -78,6 +77,11 @@ textarea{
 
 .form-group, .btn-group, .input-group{
     margin: 3px 0 3px 0;
+}
+
+.btn-search{
+    margin:0;
+    padding:9px;
 }
 
 .btn-separator{
