@@ -116,7 +116,7 @@ func (n *Note) GetStampForDay(date time.Time) time.Time {
 }
 
 func (n *Note) String() string {
-	s := fmt.Sprintf("\n* %s\n", n.Title)
+	s := fmt.Sprintf("\n* %s %s\n", n.Status, n.Title)
 	for i := range n.Stamps {
 		s += fmt.Sprintf("\t<%s>\n", n.Stamps[i].Format(ORGDATEHOURFORMAT))
 	}
