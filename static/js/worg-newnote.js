@@ -11,6 +11,8 @@ $(document).ready(function(){
     $("#StringDate").html(date)
 
 
+    var selectedText
+
     // Forms buttons
 
     $("#AllDay").click(function(e){
@@ -35,6 +37,26 @@ $(document).ready(function(){
 	    title = title.replace(/^TODO/,"")
 	}
 	$("#Title").val(title)
+    })
+
+    $("#Bold").click(function(e){
+	insertAtCaret("Body"," * *")
+    })
+
+    $("#Italic").click(function(e){
+	insertAtCaret("Body"," / /")
+    })
+
+    $("#Picture").click(function(e){
+	insertAtCaret("Body"," [[url]]")
+    })
+
+    $("#Link").click(function(e){
+	insertAtCaret("Body"," [[url][texto]]")
+    })
+
+    $("#List").click(function(e){
+	insertAtCaret("Body"," \n-\n-\n-")
     })
 
 

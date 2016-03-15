@@ -36,6 +36,11 @@
 	    <li><a href="/notes/notebooks">Cuadernos</a></li>
             <li><a href="/logout">Salir</a></li>
           </ul>
+	  <form method="POST" action="/notes/search" class="navbar-form col-xs-12 pull-right" role="search">
+	    <div class="form-group">
+	      <input type="text" id="search-note" class="form-control" placeholder="Search">
+	    </div>
+	  </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -99,20 +104,20 @@
 	  </div>
 
 	  <div class="col-xs-12 col-md-9 btn-group" role="group">
-	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Negrita">
+	    <button type="button" class="btn btn-default" id="Bold" data-toggle="tooltip" title="Negrita">
 	      <span class="glyphicon glyphicon-bold" aria-hidden="true"></span>
 	    </button>
-	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Cursiva">
+	    <button type="button" class="btn btn-default" id="Italic" data-toggle="tooltip" title="Cursiva">
 	      <span class="glyphicon glyphicon-italic" aria-hidden="true"></span>
 	    </button>
 	    <span class="btn-separator"></span>
-	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Imagen">
+	    <button type="button" class="btn btn-default" id="Picture" data-toggle="tooltip" title="Imagen">
 	      <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
 	    </button>
-	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Enlace">
+	    <button type="button" class="btn btn-default" id="Link" data-toggle="tooltip" title="Enlace">
 	      <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
 	    </button>
-	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Lista">
+	    <button type="button" class="btn btn-default" id="List" data-toggle="tooltip" title="Lista">
 	      <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
 	    </button>
 	    <button type="button" class="btn btn-default" data-toggle="tooltip" title="Bloque de código">
