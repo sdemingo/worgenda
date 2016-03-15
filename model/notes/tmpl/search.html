@@ -1,5 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Worgenda</title>
@@ -7,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/overcast/jquery-ui.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-clockpicker.min.css">
     <link rel="stylesheet" href="/static/css/worgenda.css">
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="/static/js/worg-utils.js"></script>
-    <script src="/static/js/worg-agenda.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>
+    <script type="text/javascript" src="/static/js/worg-utils.js"></script>
+    <script type="text/javascript" src="/static/js/worg-search.js"></script>
 
   </head>
   <body>
@@ -38,23 +38,35 @@
           </ul>
 	  <form method="POST" action="/notes/search" class="navbar-form col-xs-12 pull-right" role="search">
 	    <div class="form-group">
-	      <input type="text"  name="search-note" id="search-note" class="form-control" placeholder="Search">
+	      <input type="text" name="search-note" id="search-note" class="form-control" placeholder="Search">
 	    </div>
 	  </form>
-
         </div><!--/.nav-collapse -->
       </div>
     </nav>
 
-    <div class="container-fluid">
-      <div id="datepicker" class="row col-xs-12 col-sm-12 col-md-5">
-      </div>
-      <div id="content" class="row col-xs-12 col-sm-12 col-md-7">
-      </div>
-    </div>
+    <div class="container">
 
-    <div class="container-fluid">
-      <div id="tasks" class="row col-xs-12 col-sm-12 col-md-12">
+      <div class="row col-xs-12 col-sm-12 col-md-6 col-md-offset-3">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Resultados para "{{.Search}}"</h3>
+	  </div>
+	  <div class="panel-body">
+          {{ if not .Events }}
+	    <p>La búsqueda no produjo resultados</p>
+          {{else}}
+	    <div class="list-group">
+            {{range .Events}}
+	      <a href="#" class="list-group-item">
+		<p class="list-group-item-heading">{{.Title}}</p>
+		<p class="list-group-item-text full-body">{{.GetTextBody}}</p>
+	      </a>
+            {{end}}
+	    </div>
+         {{end}}
+	  </div>
+	</div>
       </div>
     </div>
 
@@ -63,6 +75,5 @@
         <p class="text-muted">Worgenda beta version</p>
       </div>
     </footer>
-
   </body>
 </html>

@@ -76,6 +76,11 @@ func (n *Note) GetHTMLBody() string {
 	return Org2HTML([]byte(n.Body), "")
 }
 
+func (n *Note) GetTextBody() string {
+	body := strings.Replace(n.Body, "\n", "<br>", -1)
+	return body
+}
+
 // Return if a note have a stamp which happens in this day
 func (n *Note) InDay(date time.Time) bool {
 	for _, stamp := range n.Stamps {

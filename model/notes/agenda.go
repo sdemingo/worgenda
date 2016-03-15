@@ -1,6 +1,7 @@
 package notes
 
 import (
+	"strings"
 	"sync"
 	"time"
 )
@@ -91,6 +92,27 @@ func (a *Agenda) GetNotesFromDate(daynotes *DayNotes) {
 			daynotes.Add(notes[i])
 		}
 	}
+}
+
+func (a *Agenda) GetNotesWithText(pattern string) []Note {
+	a.rMutex.Lock()
+	defer a.rMutex.Unlock()
+
+	search := make([]Note, 0)
+	pattern = strings.ToLower(pattern)
+
+	for _, nbook := range a.Notes {
+		for _, note := range nbook {
+			title := strings.ToLower(note.Title)
+			body := strings.ToLower(note.Body)
+			if strings.Contains(title, pattern) ||
+				strings.Contains(body, pattern) {
+				search = append(search, note)
+			}
+		}
+	}
+
+	return search
 }
 
 func (a *Agenda) GetNotesFromNotebook(notebook string) []Note {
