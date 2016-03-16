@@ -57,12 +57,24 @@ function getTodoTasks(){
     	success: function (html){
 	    $("#tasks").html(html)
 	    $(".localdate").each(function(i){
-		console.log("bla")
 		var title=$(this).html()
 		title=localStringDate(title)
 		$(this).html(title)
 	    })
-		},
+		
+	    $("p.full-body").hide()
+	    $("a.list-group-item").click(function(e){
+		e.preventDefault()
+
+		if ($(this).hasClass("expand")){
+		    $(this).removeClass("expand")
+		    $(this).children(".full-body").hide()
+		}else{
+		    $(this).addClass("expand")
+		    $(this).children(".full-body").show()
+		}
+	    })
+	},
     	error: function(error){
 	    window.location.href="/"
 	}
@@ -137,6 +149,7 @@ function loadHTML(html){
 	    }
 	})  	
     })
+
 }
 
 

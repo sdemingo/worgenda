@@ -8,7 +8,7 @@
     {{else}}
     <div class="list-group">
      {{range .}}
-      <div class="list-group-item">
+      <a href="" class="list-group-item">
 	{{if .HasDeadline .Deadline}}
 	<p class="list-group-item-heading">
 	  <span class="text-danger"><span class="glyphicon glyphicon-time"></span></span>
@@ -17,7 +17,8 @@
 	{{else}}
 	<p class="list-group-item-heading">{{.Title}}</p>
 	{{end}}
-      </div>
+	<p class="list-group-item-text full-body">{{.GetTextBody}}</p>
+      </a>
    {{end}}
     </div>
     {{end}}
