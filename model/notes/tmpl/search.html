@@ -58,10 +58,10 @@
           {{else}}
 	    <div class="list-group">
             {{range .Events}}
-	      <a href="#" class="list-group-item">
+	      <div class="list-group-item">
 		<p class="list-group-item-heading">{{.Title}}</p>
 		<p class="list-group-item-text full-body">{{.GetTextBody}}</p>
-	      </a>
+	      </div>
             {{end}}
 	    </div>
          {{end}}

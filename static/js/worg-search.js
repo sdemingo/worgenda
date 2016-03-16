@@ -3,7 +3,7 @@ $(document).ready(function(){
 
     $("p.full-body").hide()
 
-    $("a.list-group-item").click(function(e){
+    $(".list-group-item").click(function(e){
 	e.preventDefault()
 
 	if ($(this).hasClass("expand")){
