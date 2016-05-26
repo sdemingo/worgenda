@@ -243,18 +243,6 @@ var ulineReg = regexp.MustCompile("(?P<prefix>[\\s|\\W]+)_(?P<text>[^\\s][^_]+)_
 var codeLineReg = regexp.MustCompile("(?P<prefix>[\\s|\\W]+)=(?P<text>[^\\s][^\\=]+)=(?P<suffix>[\\s|\\W]*)")
 var strikeReg = regexp.MustCompile("(?P<prefix>[\\s|[\\W]+)\\+(?P<text>[^\\s][^\\+]+)\\+(?P<suffix>[\\s|\\W]*)")
 
-// listas
-var ulistItemReg = regexp.MustCompile("(?m)^\\s*[\\+|\\-]\\s+(?P<item>[^\\-|\\+|\\n+]+)")
-var olistItemReg = regexp.MustCompile("(?m)^\\s*[0-9]+\\.\\s+(?P<item>[^\\-|\\+|\\n+]+)")
-
-//var ulistItemReg = regexp.MustCompile("(?m)^\\s*[\\+|\\-]\\s+(?P<item>[^\\-|\\+]+)$")
-//var olistItemReg = regexp.MustCompile("(?m)^\\s*[0-9]+\\.\\s+(?P<item>[^\\-|\\+]+)$")
-
-//var ulistReg = regexp.MustCompile("(?P<items>(\\<uli-begin\\>[^\\<]+\\<uli-end\\>)+)")
-//var olistReg = regexp.MustCompile("(?P<items>(\\<oli-begin\\>[^\\<]+\\<oli-end\\>)+)")
-var ulistReg = regexp.MustCompile("(?s)(?P<items>(\\<uli-begin\\>.+\\<uli-end\\>)+)")
-var olistReg = regexp.MustCompile("(?s)(?P<items>(\\<oli-begin\\>.+\\<oli-end\\>)+)")
-
 func Org2HTML(content []byte, url string) string {
 
 	// First remove all HTML raw tags for security
@@ -293,20 +281,10 @@ func Org2HTML(content []byte, url string) string {
 	out = codeLineReg.ReplaceAll(out, []byte("$prefix<code>$text</code>$suffix"))
 	out = strikeReg.ReplaceAll(out, []byte("$prefix<s>$text</s>$suffix"))
 
-	// List with fake tags for items
-	out = ulistItemReg.ReplaceAll(out, []byte("<uli-begin>$item<uli-end>"))
-	out = ulistReg.ReplaceAll(out, []byte("<ul>\n$items</ul>\n"))
-	out = olistItemReg.ReplaceAll(out, []byte("<fake-oli>$item</fake-oli>\n"))
-	out = olistReg.ReplaceAll(out, []byte("<ol>\n$items</ol>\n"))
-
-	// Removing fake items tags
-	sout := string(out)
-	sout = strings.Replace(sout, "<uli-begin>", "<li>", -1)
-	sout = strings.Replace(sout, "<uli-end>", "</li>\n", -1)
-	sout = strings.Replace(sout, "<oli-begin>", "<li>", -1)
-	sout = strings.Replace(sout, "<oli-end>", "</li>\n", -1)
-
 	// Reinsert block codes
+	sout := string(out)
+	sout = strings.Replace(sout, "\n", "<br>", -1)
+
 	sout = insertBlocks(sout, codeBlocks, "<pre><code>", "</code></pre>", "code")
 	sout = insertBlocks(sout, quoteBlocks, "<blockquote>", "</blockquote>", "quote")
 

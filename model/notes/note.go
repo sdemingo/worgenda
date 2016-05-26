@@ -72,12 +72,8 @@ func (n *Note) GetResumeBody() string {
 	}
 }
 
-func (n *Note) GetHTMLBody() string {
-	return Org2HTML([]byte(n.Body), "")
-}
-
 func (n *Note) GetTextBody() string {
-	body := strings.Replace(n.Body, "\n", "<br>", -1)
+	body := Org2HTML([]byte(n.Body), "")
 	return body
 }
 
