@@ -253,9 +253,9 @@ func Org2HTML(content []byte, url string) string {
 	out = head2Reg.ReplaceAll(out, []byte("<h2>$head</h2>\n"))
 
 	// images
-	out = imgReg.ReplaceAll(out, []byte("<a href='"+url+"/img/$src'><img src='"+url+"/img/thumbs/$src'/></a>"))
-	out = imgLinkReg.ReplaceAll(out, []byte("<a href='"+url+"/img/$img'><img src='"+url+"/img/thumbs/$thumb'/></a>"))
-	out = linkReg.ReplaceAll(out, []byte("<a href='$url'>$text</a>"))
+	out = imgReg.ReplaceAll(out, []byte("<a target=\"_blank\" href='"+url+"/img/$src'><img src='"+url+"/img/thumbs/$src'/></a>"))
+	out = imgLinkReg.ReplaceAll(out, []byte("<a target=\"_blank\" href='"+url+"/img/$img'><img src='"+url+"/img/thumbs/$thumb'/></a>"))
+	out = linkReg.ReplaceAll(out, []byte("<a target=\"_blank\" href='$url'>$text</a>"))
 
 	// Extract blocks codes
 	codeBlocks, out := extractBlocks(string(out),
