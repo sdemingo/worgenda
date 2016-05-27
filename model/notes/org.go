@@ -66,7 +66,6 @@ func parseDeadlines(orgnote string) time.Time {
 	if deadlineReg.FindString(orgnote) != "" {
 		dl := yearMonthDayReg.FindAllString(orgnote, 1)
 		deadline, _ = time.Parse(ORGDATEFORMAT, dl[0])
-		//fmt.Println(deadline)
 		return deadline
 	}
 	return deadline
@@ -82,7 +81,6 @@ func parseDeadlineWarning(orgnote string) time.Duration {
 		durStr := durReg.FindString(w)
 		number, _ := strconv.ParseInt(numberStr, 10, 64)
 
-		//fmt.Println(number, durStr)
 		switch durStr {
 		case "h":
 			return time.Duration(number) * time.Hour
@@ -140,11 +138,11 @@ func parseBody(orgnote string) string {
 	}
 
 	body = deadlineReg.ReplaceAllString(body, "")
-	body = repetitionStatusReg.ReplaceAllString(body, "")
+	//body = repetitionStatusReg.ReplaceAllString(body, "")
 	body = propertiesGroupReg.ReplaceAllString(body, "")
 	body = noteTitleReg.ReplaceAllString(body, "")
-	body = dateReg.ReplaceAllString(body, "")
-	body = hourDateReg.ReplaceAllString(body, "")
+	//body = dateReg.ReplaceAllString(body, "")
+	//body = hourDateReg.ReplaceAllString(body, "")
 
 	return strings.Trim(body, " \n\t")
 }
@@ -214,8 +212,13 @@ func parseStamps(orgnote string) []time.Time {
  HTML conversion
 */
 
-var head1Reg = regexp.MustCompile("(?m)^\\* (?P<head>.+)\\n")
-var head2Reg = regexp.MustCompile("(?m)^\\*\\* (?P<head>.+)\\n")
+var head1Reg = regexp.MustCompile("(?m)^\\*(?P<status> TODO| DONE)? (?P<head>.+)$")
+var head2Reg = regexp.MustCompile("(?m)^\\*\\*(?P<status> TODO| DONE)? (?P<head>.+)$")
+var head3Reg = regexp.MustCompile("(?m)^\\*\\*\\* (?P<head>.+)$")
+var head4Reg = regexp.MustCompile("(?m)^\\*\\*\\*\\* (?P<head>.+)$")
+
+//var tagsReg = regexp.MustCompile("(?m)^(?P<head>\\*+ .+)\\s*:(?P<tags>.+):$")
+
 var linkReg = regexp.MustCompile("\\[\\[(?P<url>[^\\]]+)\\]\\[(?P<text>[^\\]]+)\\]\\]")
 var imgLinkReg = regexp.MustCompile("\\[\\[file:\\.\\./img/(?P<img>[^\\]]+)\\]\\[file:\\.\\./img/(?P<thumb>[^\\]]+)\\]\\]")
 var imgReg = regexp.MustCompile("\\[\\[\\.\\./img/(?P<src>[^\\]]+)\\]\\]")
@@ -234,6 +237,7 @@ var centerFooterReg = regexp.MustCompile("(?m)^\\#\\+END_CENTER\\n")
 
 var parReg = regexp.MustCompile("\\n\\n+(?P<text>[^\\n]+)")
 var allPropsReg = regexp.MustCompile(":PROPERTIES:(?s).+:END:")
+var propReg = regexp.MustCompile("(?m)^\\#\\+.*$")
 var rawHTML = regexp.MustCompile("\\<A-Za-z[^\\>]+\\>")
 
 //estilos de texto
@@ -241,16 +245,22 @@ var boldReg = regexp.MustCompile("(?P<prefix>[\\s|\\W]+)\\*(?P<text>[^\\s][^\\*]
 var italicReg = regexp.MustCompile("(?P<prefix>[\\s])/(?P<text>[^\\s][^/]+)/(?P<suffix>[^A-Za-z0-9]*)")
 var ulineReg = regexp.MustCompile("(?P<prefix>[\\s|\\W]+)_(?P<text>[^\\s][^_]+)_(?P<suffix>[\\s|\\W]*)")
 var codeLineReg = regexp.MustCompile("(?P<prefix>[\\s|\\W]+)=(?P<text>[^\\s][^\\=]+)=(?P<suffix>[\\s|\\W]*)")
-var strikeReg = regexp.MustCompile("(?P<prefix>[\\s|[\\W]+)\\+(?P<text>[^\\s][^\\+]+)\\+(?P<suffix>[\\s|\\W]*)")
 
 func Org2HTML(content []byte, url string) string {
 
 	// First remove all HTML raw tags for security
 	out := rawHTML.ReplaceAll(content, []byte(""))
 
+	//tags
+	//out = tagsReg.ReplaceAll(out, []byte("$head <span class=\"tags\">$tags</span>"))
+
 	// headings (h1 is not admit in the post body)
-	out = head1Reg.ReplaceAll(out, []byte(""))
-	out = head2Reg.ReplaceAll(out, []byte("<h2>$head</h2>\n"))
+	out = head1Reg.ReplaceAll(out, []byte("<h1 class=\"note $status\">$head</h1>"))
+	out = head2Reg.ReplaceAll(out, []byte("<h2 class=\"note $status\">$head</h2>\n"))
+	out = head3Reg.ReplaceAll(out, []byte("<h3 class=\"note $status\">$head</h3>\n"))
+	out = head4Reg.ReplaceAll(out, []byte("<h4 class=\"note $status\">$head</h4>\n"))
+	out = regexp.MustCompile("class=\"(.*)TODO(.*)\">").ReplaceAll(out, []byte("class=\"$1 todo $2\">"))
+	out = regexp.MustCompile("class=\"(.*)DONE(.*)\">").ReplaceAll(out, []byte("class=\"$1 done $2\">"))
 
 	// images
 	out = imgReg.ReplaceAll(out, []byte("<a target=\"_blank\" href='"+url+"/img/$src'><img src='"+url+"/img/thumbs/$src'/></a>"))
@@ -273,13 +283,13 @@ func Org2HTML(content []byte, url string) string {
 	out = centerReg.ReplaceAll(out, []byte("<span class=\"center\">$cite</span>\n"))
 	out = parReg.ReplaceAll(out, []byte("\n\n<p/>$text"))
 	out = allPropsReg.ReplaceAll(out, []byte("\n"))
+	out = propReg.ReplaceAll(out, []byte("\n"))
 
 	// font styles
 	out = italicReg.ReplaceAll(out, []byte("$prefix<i>$text</i>$suffix"))
 	out = boldReg.ReplaceAll(out, []byte("$prefix<b>$text</b>$suffix"))
 	out = ulineReg.ReplaceAll(out, []byte("$prefix<u>$text</u>$suffix"))
 	out = codeLineReg.ReplaceAll(out, []byte("$prefix<code>$text</code>$suffix"))
-	out = strikeReg.ReplaceAll(out, []byte("$prefix<s>$text</s>$suffix"))
 
 	// Reinsert block codes
 	sout := string(out)
