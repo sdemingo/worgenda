@@ -216,8 +216,7 @@ var head1Reg = regexp.MustCompile("(?m)^\\*(?P<status> TODO| DONE)? (?P<head>.+)
 var head2Reg = regexp.MustCompile("(?m)^\\*\\*(?P<status> TODO| DONE)? (?P<head>.+)$")
 var head3Reg = regexp.MustCompile("(?m)^\\*\\*\\* (?P<head>.+)$")
 var head4Reg = regexp.MustCompile("(?m)^\\*\\*\\*\\* (?P<head>.+)$")
-
-//var tagsReg = regexp.MustCompile("(?m)^(?P<head>\\*+ .+)\\s*:(?P<tags>.+):$")
+var tagsReg = regexp.MustCompile("(?m)^(?P<head>\\*+ .+)\\s*:(?P<tags>.+):$")
 
 var linkReg = regexp.MustCompile("\\[\\[(?P<url>[^\\]]+)\\]\\[(?P<text>[^\\]]+)\\]\\]")
 var imgLinkReg = regexp.MustCompile("\\[\\[file:\\.\\./img/(?P<img>[^\\]]+)\\]\\[file:\\.\\./img/(?P<thumb>[^\\]]+)\\]\\]")
@@ -251,8 +250,8 @@ func Org2HTML(content []byte, url string) string {
 	// First remove all HTML raw tags for security
 	out := rawHTML.ReplaceAll(content, []byte(""))
 
-	//tags
-	//out = tagsReg.ReplaceAll(out, []byte("$head <span class=\"tags\">$tags</span>"))
+	// tags (remove tags)
+	out = tagsReg.ReplaceAll(out, []byte(""))
 
 	// headings (h1 is not admit in the post body)
 	out = head1Reg.ReplaceAll(out, []byte("<h1 class=\"note $status\">$head</h1>"))
