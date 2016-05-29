@@ -60,7 +60,10 @@
             {{range .Events}}
 	      <div class="list-group-item">
 		<p class="list-group-item-heading">{{.Title}}</p>
-		<p class="list-group-item-text full-body">{{.GetTextBody}}</p>
+		<!--  <p class="list-group-item-text full-body">{{.GetTextBody}}</p>-->
+		<div class="list-group-item-text full-body">
+                  {{.GetTextBody}}
+		</div>
 	      </div>
             {{end}}
 	    </div>

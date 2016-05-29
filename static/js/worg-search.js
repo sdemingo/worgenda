@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
 
-    $("p.full-body").hide()
+    $(".full-body").hide()
 
     $(".list-group-item").click(function(e){
 	e.preventDefault()

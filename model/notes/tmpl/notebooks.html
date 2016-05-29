@@ -53,7 +53,8 @@
 	</ul>
         {{range $key, $value := .}}
 	<div id="tabs-{{$key}}">
-	  <pre>{{$value}}</pre>
+	  <!--  <pre>{{$value}}</pre>-->
+	  {{$value}}
 	</div>
         {{end}}
       </div>
