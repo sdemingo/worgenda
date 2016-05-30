@@ -22,7 +22,8 @@ type DropboxConfig struct {
 	AppKey    string
 	AppSecret string
 	Token     string
-	Files     []string
+	Agenda    []string
+	Bookmarks string
 	Notebook  string
 }
 
@@ -48,7 +49,7 @@ func Upload() {
 }
 
 func readSources(config *DropboxConfig) {
-	for _, file := range config.Files {
+	for _, file := range config.Agenda {
 		fcontent, err := ReadFile(config, file)
 		if err != nil {
 			log.Printf("notes: readsources: %v", err)

@@ -51,7 +51,6 @@ func (a *Agenda) AddNotebook(name string, content string) error {
 		a.Notes[name] = append(a.Notes[name], notes[i])
 	}
 
-	//a.Notebooks[name] = content
 	a.Notebooks[name] = Org2HTML([]byte(content), "")
 	a.lastSync = time.Now()
 

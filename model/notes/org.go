@@ -108,7 +108,11 @@ func parseStatus(orgnote string) string {
 func parseTitle(orgnote string) string {
 	title := noteTitleReg.FindString(orgnote)
 	prefix := regexp.MustCompile("(?m)^\\*+( TODO| DONE)?( \\[#(A|B|C)\\])?")
-	return strings.Trim(prefix.ReplaceAllString(title, ""), " \n\t")
+	title = prefix.ReplaceAllString(title, "")
+
+	// suffix := regexp.MustCompile("(?m)^.+ :[a-zA-Z0-9:]+:\\s*$")
+	// title = suffix.ReplaceAllString(title, "")
+	return strings.Trim(title, " \n\t")
 }
 
 // Extract and clean the body note. If the body content a
@@ -216,7 +220,7 @@ var head1Reg = regexp.MustCompile("(?m)^\\*(?P<status> TODO| DONE)? (?P<head>.+)
 var head2Reg = regexp.MustCompile("(?m)^\\*\\*(?P<status> TODO| DONE)? (?P<head>.+)$")
 var head3Reg = regexp.MustCompile("(?m)^\\*\\*\\* (?P<head>.+)$")
 var head4Reg = regexp.MustCompile("(?m)^\\*\\*\\*\\* (?P<head>.+)$")
-var tagsReg = regexp.MustCompile("(?m)^(?P<head>\\*+ .+)\\s*:(?P<tags>.+):$")
+var tagsReg = regexp.MustCompile("(?m)^\\*+ (?P<head>.+)\\s*:(?P<tags>.+):$")
 
 var linkReg = regexp.MustCompile("\\[\\[(?P<url>[^\\]]+)\\]\\[(?P<text>[^\\]]+)\\]\\]")
 var imgLinkReg = regexp.MustCompile("\\[\\[file:\\.\\./img/(?P<img>[^\\]]+)\\]\\[file:\\.\\./img/(?P<thumb>[^\\]]+)\\]\\]")
@@ -261,11 +265,6 @@ func Org2HTML(content []byte, url string) string {
 	out = regexp.MustCompile("class=\"(.*)TODO(.*)\">").ReplaceAll(out, []byte("class=\"$1 todo $2\">"))
 	out = regexp.MustCompile("class=\"(.*)DONE(.*)\">").ReplaceAll(out, []byte("class=\"$1 done $2\">"))
 
-	// images
-	out = imgReg.ReplaceAll(out, []byte("<a target=\"_blank\" href='"+url+"/img/$src'><img src='"+url+"/img/thumbs/$src'/></a>"))
-	out = imgLinkReg.ReplaceAll(out, []byte("<a target=\"_blank\" href='"+url+"/img/$img'><img src='"+url+"/img/thumbs/$thumb'/></a>"))
-	out = linkReg.ReplaceAll(out, []byte("<a target=\"_blank\" href='$url'>$text</a>"))
-
 	// Extract blocks codes
 	codeBlocks, out := extractBlocks(string(out),
 		codeReg,
@@ -289,6 +288,11 @@ func Org2HTML(content []byte, url string) string {
 	out = boldReg.ReplaceAll(out, []byte("$prefix<b>$text</b>$suffix"))
 	out = ulineReg.ReplaceAll(out, []byte("$prefix<u>$text</u>$suffix"))
 	out = codeLineReg.ReplaceAll(out, []byte("$prefix<code>$text</code>$suffix"))
+
+	// images
+	out = imgReg.ReplaceAll(out, []byte("<a target='_blank' href='"+url+"/img/$src'><img src='"+url+"/img/thumbs/$src'/></a>"))
+	out = imgLinkReg.ReplaceAll(out, []byte("<a target='_blank' href='"+url+"/img/$img'><img src='"+url+"/img/thumbs/$thumb'/></a>"))
+	out = linkReg.ReplaceAll(out, []byte("<a target='_blank' href='$url'>$text</a>"))
 
 	// Reinsert block codes
 	sout := string(out)
