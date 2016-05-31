@@ -43,6 +43,7 @@ func main() {
 	http.HandleFunc("/notes/notebooks", notes.GetNotebooks)
 	http.HandleFunc("/notes/todo", notes.GetTasks)
 	http.HandleFunc("/notes/search", notes.SearchEvents)
+	http.HandleFunc("/notes/bookmarks", notes.GetBookmarks)
 
 	fs := http.FileServer(http.Dir(dir + "/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))

@@ -1,0 +1,80 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Worgenda</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/overcast/jquery-ui.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-clockpicker.min.css">
+    <link rel="stylesheet" href="/static/css/worgenda.css">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>
+    <script type="text/javascript" src="/static/js/worg-utils.js"></script>
+    <script type="text/javascript" src="/static/js/worg-search.js"></script>
+
+  </head>
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Worgenda</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav pull-right">
+            <li><a href="/notes/new">Crea Nota</a></li>
+            <li><a href="/welcome">Calendario</a></li>
+	    <li><a href="/notes/notebooks">Cuadernos</a></li>
+            <li><a href="/logout">Salir</a></li>
+          </ul>
+	  <form method="POST" action="/notes/search" class="navbar-form col-xs-12 pull-right" role="search">
+	    <div class="form-group">
+	      <input type="text" name="search-note" id="search-note" class="form-control" placeholder="Search">
+	    </div>
+	  </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="row col-xs-12 col-sm-12 col-md-8 col-md-offset-3">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Marcadores</h3>
+	  </div>
+	  <div class="panel-body">
+
+	    <div class="list-group">
+            {{range .}}
+	      <div class="list-group-item">
+		<p class="list-group-item-heading"><a target="_blank" href="{{.Url}}">{{.Text}}</a></p>
+		<div class="list-group-item-text full-body">
+                  {{.Desc}}
+		</div>
+	      </div>
+            {{end}}
+	    </div>
+	    
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container text-center">
+        <p class="text-muted">Worgenda beta version</p>
+      </div>
+    </footer>
+  </body>
+</html>

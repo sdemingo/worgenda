@@ -3,6 +3,7 @@ package notes
 import (
 	"fmt"
 	"math/rand"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -171,4 +172,31 @@ func datesInSameDay(date1, date2 time.Time) bool {
 	}
 
 	return false
+}
+
+type Bookmark struct {
+	Url  string
+	Text string
+	Desc string
+	Tags []string
+}
+
+func NewBookmark(note Note) *Bookmark {
+	b := new(Bookmark)
+	b.Tags = make([]string, 0)
+
+	re := regexp.MustCompile("\\[\\[.+\\]\\]")
+	links := re.FindAllString(note.Title, 1)
+	if len(links) > 0 {
+		fields := strings.Split(strings.Trim(links[0], "[]"), "][")
+		b.Url = fields[0]
+		b.Text = fields[1]
+	}
+
+	tagsRe := regexp.MustCompile(":[a-zA-Z0-9:]+:")
+	tagsFind := tagsRe.FindAllString(note.Title, -1)
+	if len(tagsFind) > 0 {
+		b.Tags = strings.Split(tagsFind[0], ":")
+	}
+	return b
 }

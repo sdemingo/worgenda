@@ -269,5 +269,31 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%v", err)
 		return
 	}
+}
 
+func GetBookmarks(w http.ResponseWriter, r *http.Request) {
+	_, err := app.GetSession(r)
+	if err != nil {
+		app.Exit(w, r)
+		return
+	}
+
+	// r.ParseForm()
+	// search := r.FormValue("search-bookmark")
+
+	notes := AllNotes.GetNotesFromNotebook("enlaces.org")
+	bookmarks := make([]*Bookmark, 0)
+	for _, note := range notes {
+		b := NewBookmark(note)
+		if b.Text != "" {
+			bookmarks = append(bookmarks, b)
+		}
+	}
+
+	// Write template
+	tmpl := template.Must(template.ParseFiles(app.AppDir + "/model/notes/tmpl/bookmarks.html"))
+	if err := tmpl.Execute(w, bookmarks); err != nil {
+		log.Printf("%v", err)
+		return
+	}
 }

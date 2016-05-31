@@ -59,13 +59,22 @@ func readSources(config *DropboxConfig) {
 		AllNotes.AddNotebook(filepath.Base(file), fcontent)
 	}
 
+	// Parsing worgenda notebook
 	fcontent, err := ReadFile(config, config.Notebook)
 	if err != nil {
 		log.Printf("notes: readsources: %v", err)
 		return
 	}
-
 	AllNotes.AddNotebook(filepath.Base(config.Notebook), fcontent)
+
+	// Parsing bookmarks
+	fcontent, err = ReadFile(config, config.Bookmarks)
+	if err != nil {
+		log.Printf("notes: readsources: %v", err)
+		return
+	}
+
+	AllNotes.AddNotebook(filepath.Base(config.Bookmarks), fcontent)
 }
 
 func writeSources(config *DropboxConfig) {
