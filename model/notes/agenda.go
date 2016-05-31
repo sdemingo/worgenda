@@ -11,6 +11,7 @@ var AllNotes *Agenda
 type Agenda struct {
 	Notebooks map[string]string
 	Notes     map[string][]Note
+	Bookmarks []Bookmark
 	rMutex    sync.RWMutex
 	lastSync  time.Time
 }
@@ -23,6 +24,7 @@ func NewAgenda() *Agenda {
 	a := new(Agenda)
 	a.Notes = make(map[string][]Note)
 	a.Notebooks = make(map[string]string)
+	a.Bookmarks = make([]Bookmark, 0)
 	return a
 }
 
@@ -53,6 +55,22 @@ func (a *Agenda) AddNotebook(name string, content string) error {
 
 	a.Notebooks[name] = Org2HTML([]byte(content), "")
 	a.lastSync = time.Now()
+
+	return nil
+}
+
+func (a *Agenda) AddBookmarks(content string) error {
+	a.rMutex.RLock()
+	defer a.rMutex.RUnlock()
+
+	notes := Parse(content)
+	for i := range notes {
+		b := NewBookmark(notes[i])
+		if b.Text != "" {
+			a.Bookmarks = append(a.Bookmarks, b)
+		}
+
+	}
 
 	return nil
 }

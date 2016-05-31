@@ -74,7 +74,7 @@ func readSources(config *DropboxConfig) {
 		return
 	}
 
-	AllNotes.AddNotebook(filepath.Base(config.Bookmarks), fcontent)
+	AllNotes.AddBookmarks(fcontent)
 }
 
 func writeSources(config *DropboxConfig) {

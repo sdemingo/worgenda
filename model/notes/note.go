@@ -181,7 +181,7 @@ type Bookmark struct {
 	Tags []string
 }
 
-func NewBookmark(note Note) *Bookmark {
+func NewBookmark(note Note) Bookmark {
 	b := new(Bookmark)
 	b.Tags = make([]string, 0)
 
@@ -198,5 +198,5 @@ func NewBookmark(note Note) *Bookmark {
 	if len(tagsFind) > 0 {
 		b.Tags = strings.Split(tagsFind[0], ":")
 	}
-	return b
+	return *b
 }

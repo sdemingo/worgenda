@@ -281,15 +281,7 @@ func GetBookmarks(w http.ResponseWriter, r *http.Request) {
 	// r.ParseForm()
 	// search := r.FormValue("search-bookmark")
 
-	notes := AllNotes.GetNotesFromNotebook("enlaces.org")
-	bookmarks := make([]*Bookmark, 0)
-	for _, note := range notes {
-		b := NewBookmark(note)
-		if b.Text != "" {
-			bookmarks = append(bookmarks, b)
-		}
-	}
-
+	bookmarks := AllNotes.Bookmarks
 	// Write template
 	tmpl := template.Must(template.ParseFiles(app.AppDir + "/model/notes/tmpl/bookmarks.html"))
 	if err := tmpl.Execute(w, bookmarks); err != nil {
